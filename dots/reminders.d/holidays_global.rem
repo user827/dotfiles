@@ -1,0 +1,4 @@
+REM Sun May 8 +[my_warn] %"Mother's day%" %b on %a
+REM [trigger(easterdate($Uy))] +[my_warn] %"Easter%" %b on %a
+
+; vim: ft=remind

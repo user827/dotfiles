@@ -1,0 +1,9 @@
+# File used by git and others (like rsync).
+*.zwc
+.*.swp
+*~
+tags
+rusty-tags.vi
+gutentags
+*.nfs*
+.xo-config.json

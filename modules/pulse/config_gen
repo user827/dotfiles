@@ -1,0 +1,5 @@
+include = SED_THIS_HOME/hq.conf
+include = SED_THIS_HOME/local.conf
+# Write your default config options here!
+
+#include = /usr/local/etc/Lmpv_local.conf

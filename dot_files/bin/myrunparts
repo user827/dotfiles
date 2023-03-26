@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu
+
+dir=$1
+
+_RET=0
+for f in "$dir"/*; do
+  [ -f "$f" ] || continue
+  ret=0
+  case "$f" in
+    *)
+      sh "$f" || ret=$?
+      ;;
+  esac
+  if [ "$ret" != 0 ]; then
+    echo "<3>${0##*/}: ${f##*/} failed with $ret" >&2
+  fi
+  [ "$_RET" != 0 ] || _RET=$ret
+done
+exit "$_RET"

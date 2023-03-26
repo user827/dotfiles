@@ -1,0 +1,82 @@
+#!/bin/bash
+set -eu
+
+b=0
+list_only=0
+depth=
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --)
+      b=1 ;;
+    -l)
+      list_only=1 ;;
+    -d)
+      depth=$2
+      shift ;;
+    *)
+      break ;;
+  esac
+  shift
+  [ $b = 1 ] && break
+done
+
+[ "$#" -eq 0 ] && set -- "$PWD"
+
+for a; do
+  p=$(cd "$(dirname "$a")" && pwd)/$(basename "$a")
+  set -- "$@" "$p"
+  shift
+done
+
+findem() {
+  find -H "$@" -type f -regextype posix-egrep -iregex \
+    '.+\.(jpe?g|png|bmp|gif|tiff)$'
+}
+
+what='jpe?g|png|bmp|gif|tiff'
+
+sort_created() {
+  sort -zk 1nr
+}
+
+_findlatest() {
+  #findem "$@" -mindepth 1 -maxdepth 1 -mmin -"$mins"
+  #LC_ALL=C find -H "$@" -mindepth 1 -maxdepth 1 \( -type d -o -type f \
+  LC_ALL=C find -H "$@" -mindepth 1 -maxdepth 1 \( -type d -o -type f \
+    -regextype posix-egrep -iregex \
+    ".+\\.($what)\$" \) \
+    -printf '%C@ %T@ %p\0' | sort_created | \
+    sed -z 's/^[^ ]* [^ ]* //'
+}
+
+findlatest() {
+  local ent
+  if [ "$depth" = 1 ]; then
+    LC_ALL=C find -H "$@" -mindepth 1 -maxdepth 1 -type f -regextype posix-egrep -iregex \
+      ".+\\.($what)\$" -printf '%C@ %T@ %p\0' | \
+      sort_created | sed -z 's/^[^ ]* [^ ]* //'
+  else
+    _findlatest "$@" | while read -r -d $'\0' ent; do
+      if [ -d "$ent" ]; then
+        LC_ALL=C find -H "$ent" -type f -regextype posix-egrep -iregex \
+          ".+\\.($what)\$" -printf '%C@ %T@ %p\0' | \
+          sort_created | sed -z 's/^[^ ]* [^ ]* //'
+      else
+        printf %s\\n "$ent"
+      fi
+    done
+  fi
+}
+
+myname=$(basename "$0")
+if [ "$myname" = sxivrand ] ;then
+  if [ $list_only = 1 ]; then
+    findem "$@"
+  else
+    #use m3u to sue security features disabled by --playlist
+    findem "$@" | sort -R | nsxiv -io
+  fi
+elif [ "$myname" = sxivlatest ]; then
+  #findlatest "$@"
+  findlatest "$@" | tr '\0' '\n' | nsxiv -io
+fi

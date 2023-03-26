@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# --rebase ignores --verify signatures so turn back into merging
+cd ~/dotfiles && git pull --verify-signatures && ./install.sh && ./init.sh "$@"

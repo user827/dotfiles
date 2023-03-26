@@ -1,0 +1,73 @@
+#!/bin/sh
+set -eum
+
+. /usr/lib/myshlib/logs3.sh
+. /usr/lib/myshlib/utils.sh
+
+# Automatically determine an unused $DISPLAY
+d=0
+while true ; do
+    [ -e "/tmp/.X$d-lock" -o -S "/tmp/.X11-unix/X$d" ] || break
+    d=$(($d + 1))
+done
+displayname=":$d"
+unset d
+
+mcookie=$(mcookie)
+dummy=0
+xserverauthfile=$(mktemp --tmpdir serverauth.XXXXXXXXXX)
+
+xauth -q -f "$xserverauthfile" << EOF
+add :$dummy . $mcookie
+EOF
+
+xauth -q << EOF
+remove $displayname
+add $displayname . $mcookie
+EOF
+
+trap 'true' TERM HUP
+xstarted=n
+trap 'xstarted=y' USR1
+
+(
+trap '' TERM HUP TTOU USR1
+exec systemd-cat -t mystartx@vt"$XDG_VTNR" X "$displayname" vt"$XDG_VTNR" -nolisten tcp -keeptty -verbose 3 -logfile /dev/null -logverbose 0 -auth "$xserverauthfile" "$@"
+) &
+xpid=$!
+
+while [ "$xstarted" != y ]; do
+  sleep 30 &
+  sleeppid=$!
+  trap 'xstarted=y; kill -INT "$sleeppid"; trap true USR1' USR1
+  if [ "$xstarted" = y ]; then
+    kill -USR1 $$
+  fi
+  waitpid "$sleeppid" xstarted
+done
+
+# don't do this
+#trap - USR1
+
+# TODO here or elsewhere?
+export "XAUTHORITY=$HOME/.Xauthority"
+export "DISPLAY=$displayname"
+export "XSERVERPID=$xpid"
+#export "WINDOWPATH=8"
+
+# this should be in its own process group?
+systemd-cat -t mystartxcli@vt"$XDG_VTNR" sh ~/.xinitrc &
+waitpid $! xinitrc
+#awesome
+
+trap '' TERM HUP USR1 INT
+#kill -INT "$xpid"
+
+waitpid $xpid xserver
+ret=$_RET
+
+xauth remove "$displayname"
+rm "$xserverauthfile" || true
+
+deallocvt
+exit "$ret"

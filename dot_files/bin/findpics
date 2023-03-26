@@ -1,0 +1,45 @@
+#!/bin/bash
+set -eu
+
+trap "echo siginit" INT
+
+VIDS='3gp|avi|asf|divx|wmv|mp4|mkv|ts|m2ts|rmvb|mov|m4v|rv|ogm|flv|mpg|webm|video_ts.ifo'
+PICS='jpe?g|png|bmp|gif|tiff'
+
+sort_created() {
+  sort -zk 1nr
+}
+
+_findlatest() {
+  #findem "$@" -mindepth 1 -maxdepth 1 -mmin -"$mins"
+  #LC_ALL=C find -H "$@" -mindepth 1 -maxdepth 1 \( -type d -o -type f \
+  LC_ALL=C find -H "$@" -mindepth 1 -maxdepth 1 -type d \
+    -printf '%C@ %T@ %p\0' | sort_created | \
+    sed -z 's/^[^ ]* [^ ]* //'
+}
+
+
+exec 3<&0
+_findlatest "$@" | while read -r -d $'\0' d; do
+  countpics=$(fd "\\.$PICS\$" "$d" | head -10 | wc -l)
+  if [ "$countpics" = 10 ]; then
+    countvids=$(fd "\\.$VIDS\$" "$d" | head -10 | wc -l)
+    if [ "$countvids" = 10 ]; then
+      continue
+    fi
+    echo "$d"
+    (
+      trap "echo siginit" INT
+      nsxiv -ro "$d" <&3 || echo "exit $?"
+    )&
+    read -rn1 -p"press r to remove, other key to continue " ans <&3
+    echo
+    if [ "$ans" = r ]; then
+      read -rp "really remove? " ans <&3
+      if [ "$ans" = y ]; then
+	echo "removing $d"
+	rm -r --interactive=never "$d" <&3
+      fi
+    fi
+  fi
+done

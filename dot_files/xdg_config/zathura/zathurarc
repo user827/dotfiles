@@ -1,0 +1,7 @@
+set default-fg "#93A1A1"
+set default-bg "#002B36"
+set recolor-darkcolor "#93A1A1"
+set recolor-lightcolor "#002B36"
+set recolor "true"
+set window-height "800"
+set window-width "700"

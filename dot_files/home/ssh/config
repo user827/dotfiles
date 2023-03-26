@@ -1,0 +1,15 @@
+Host *
+  #SendEnv LANG LC_*
+  HashKnownHosts yes
+  #Port 4430
+  VisualHostKey yes
+
+  #WARNING insecure?
+  ControlMaster=auto
+  ControlPath=~/.ssh/%r@%h:%p
+
+  ForwardAgent=no
+
+  IdentitiesOnly yes
+
+Include ~/.ssh.d/*

@@ -1,0 +1,135 @@
+#
+# Suomalaiset juhla- ja liputuspäivät Remind-ohjelmaa varten
+#
+# Copyright (C) Mikko Silvonen <silvonen@iki.fi> 1993 - 2000
+#
+# TK-lisäykset Arto Viitanen <av@cs.uta.fi>
+#
+# Tätä tiedostoa saa kopioida ja käyttää vapaasti.
+#
+# Ks. myös http://www.iki.fi/silvonen/remind/
+#
+# $Id: Suomi.rem 2 2007-03-25 13:32:53Z Mikko Silvonen $
+
+#TODO Should the OMIT days be added first? Thats why 10Suomi.rem
+
+IF version() < "03.00.09"
+  ERRMSG %
+  ERRMSG Tämä tiedosto vaatii vähintään Remindin version 03.00.09.%
+  ERRMSG Nykyinen versiosi on [version()].
+  EXIT
+ENDIF
+
+# Varjostus viikonloppuihin ja juhlapäiviin
+SET varjo 95
+SET tkvarjor 255
+SET tkvarjog 102
+SET tkvarjob 153
+
+IF defined("tkremind")
+  REM Sat Sun SPECIAL SHADE [tkvarjor] [tkvarjog] [tkvarjob]
+ENDIF
+REM Sat Sun SPECIAL SHADE [varjo]
+
+# Pääsiäisen mukaan laskettavat
+SET easter easterdate(year(today()))
+REM [trigger(easter - 49)] CAL Laskiaissunn.
+REM [trigger(easter - 47)] CAL Laskiaistiistai
+# Marianpäivän laskukaava on monimutkaisempi...
+# REM [trigger(easter - 14)] CAL Marianp.
+REM [trigger(easter - 7)] CAL Palmusunnuntai
+OMIT [trigger(easter - 2)] CAL Pitkäperjantai
+IF defined("tkremind")
+  REM [trigger(easter - 2)] SPECIAL SHADE [tkvarjor] [tkvarjog] [tkvarjob]
+ENDIF
+REM [trigger(easter - 2)] SPECIAL SHADE [varjo]
+REM [trigger(easter)] CAL Pääsiäispäivä
+OMIT [trigger(easter + 1)] CAL 2. pääsiäispäivä
+IF defined("tkremind")
+  REM [trigger(easter + 1)] SPECIAL SHADE [tkvarjor] [tkvarjog] [tkvarjob]
+ENDIF
+REM [trigger(easter + 1)] SPECIAL SHADE [varjo]
+REM [trigger(easter + 35)] CAL Rukoussunn.
+OMIT [trigger(easter + 39)] CAL Helatorstai
+IF defined("tkremind")
+  REM [trigger(easter + 39)] SPECIAL SHADE [tkvarjor] [tkvarjog] [tkvarjob]
+ENDIF
+REM [trigger(easter + 39)] SPECIAL SHADE [varjo]
+REM [trigger(easter + 49)] CAL Helluntaipäivä
+
+# Muut
+OMIT Jan 1 CAL Uudenvuodenp.
+IF defined("tkremind")
+  REM Jan 1 SPECIAL SHADE [tkvarjor] [tkvarjog] [tkvarjob]
+ENDIF
+REM Jan 1 SPECIAL SHADE [varjo]
+OMIT Jan 6 CAL Loppiainen
+IF defined("tkremind")
+  REM Jan 6 SPECIAL SHADE [tkvarjor] [tkvarjog] [tkvarjob]
+ENDIF
+REM Jan 6 SPECIAL SHADE [varjo]
+REM Feb 5 CAL Runebergin päivä
+REM Feb 14 CAL Ystävänpäivä
+IF [isleap(today())]
+  IF [today() >= '2000/1/1']
+    REM Feb 29 CAL Karkauspäivä
+  ELSE
+    REM Feb 24 CAL Karkauspäivä
+  ENDIF
+ENDIF
+REM Feb 28 CAL Kalevalan päivä
+REM Mar 8 CAL Naistenpäivä
+REM Apr 9 CAL Agricolan päivä
+REM Apr 27 CAL Veteraanipäivä
+OMIT May 1 CAL Vappu
+IF defined("tkremind")
+  REM May 1 SPECIAL SHADE [tkvarjor] [tkvarjog] [tkvarjob]
+ENDIF
+REM May 1  SPECIAL SHADE [varjo]
+REM Sun May 8 CAL Äitienpäivä
+REM May 12 CAL Snellmanin päivä
+REM Sun May 15 CAL Kaat. muistop.
+REM Jun 4 CAL Puol.v. lippuj.
+REM Jul 27 CAL Unikeonpäivä
+REM Jul 6 CAL Eino Leinon päivä
+REM Sat Jun 20 CAL Juhannuspäivä
+REM Oct 10 CAL Aleksis Kiven p.
+REM Oct 24 CAL YK:n päivä
+REM Sat Nov 1 CAL Pyhäinpäivä
+REM Nov 6 CAL Svenska dagen
+REM Sun Nov 8 CAL Isänpäivä
+REM Sun Dec 25 -28 CAL 1. adventtisunn.
+OMIT Dec 6 CAL Itsenäisyyspäivä
+IF defined("tkremind")
+  REM Dec 6 SPECIAL SHADE [tkvarjor] [tkvarjog] [tkvarjob]
+ENDIF
+REM Dec 6 SPECIAL SHADE [varjo]
+OMIT Dec 25 CAL Joulupäivä
+IF defined("tkremind")
+  REM Dec 25 SPECIAL SHADE [tkvarjor] [tkvarjog] [tkvarjob]
+ENDIF
+REM Dec 25 SPECIAL SHADE [varjo]
+OMIT Dec 26 CAL 2. joulupäivä
+IF defined("tkremind")
+  REM Dec 26 SPECIAL SHADE [tkvarjor] [tkvarjog] [tkvarjob]
+ENDIF
+REM Dec 26 SPECIAL SHADE [varjo]
+REM Dec 28 CAL Viatt. lasten p.
+
+# Kesäaika
+#REM Sun 1 Apr --7 MSG Kesäaika alkaa.
+#REM Sun 1 Nov --7 MSG Kesäaika päättyy.
+#MYMOD
+REM Sun Jun 1 -7 +[my_warn] AT 3.00 %"Kesäaika alkaa.%" %b on %a %2
+REM Sun Nov 1 -7 +[my_warn] At 4.00 %"Kesäaika päättyy.%" %b on %a %2
+
+# Kuun vaiheet
+REM [trigger(moondate(0))] SPECIAL MOON 0
+REM [trigger(moondate(1))] SPECIAL MOON 1
+REM [trigger(moondate(2))] SPECIAL MOON 2
+REM [trigger(moondate(3))] SPECIAL MOON 3
+IF defined("tkremind")
+  REM [trigger(moondate(0))] SPECIAL MOON 0
+  REM [trigger(moondate(1))] SPECIAL MOON 1
+  REM [trigger(moondate(2))] SPECIAL MOON 2
+ENDIF

@@ -1,0 +1,6 @@
+[Unit]
+Description=Joystickwake at %I
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/nj joystickwake --loglevel info

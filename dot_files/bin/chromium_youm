@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+
+[ -f ~/.chromium_video ] && read -r profile < ~/.chromium_video || profile=Default
+tmp=$(mktemp -d)
+
+places=$tmp/History
+if [ -d ~/.config/google-chrome ]; then
+  cp ~/.config/google-chrome/"$profile"/History "$places"
+else
+  cp ~/.config/chromium/"$profile"/History "$places"
+fi
+
+last_url=$(sqlite3 "$places" 'select url from urls ORDER BY last_visit_time DESC LIMIT 1')
+rm -rf "$tmp"
+#exec youm "$last_url"
+exec mpv "$last_url"

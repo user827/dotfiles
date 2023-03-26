@@ -1,0 +1,6 @@
+*.zwc
+/git.*
+/test.sh
+/pkg
+/*.tar.xz
+/dots_gen

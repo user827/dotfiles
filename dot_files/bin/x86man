@@ -1,0 +1,44 @@
+#!/usr/bin/python
+
+import libxml2
+import sys
+
+def get_op(xpath):
+    src = ctxt.xpathEval(xpath)
+    mystr = None
+    if src:
+        srca = ctxt.xpathEval(xpath + "/a")
+        if srca:
+            mystr = srca[0].content
+            if mystr != 'rAX':
+                srct = ctxt.xpathEval(xpath + "/t")
+                if srct:
+                    mystr += srct[0].content
+        else:
+            mystr = src[0].content
+            if mystr != 'rAX':
+                srct = ctxt.xpathEval(xpath + "/@type")
+                if srct:
+                    mystr += srct[0].content
+    return mystr
+
+
+def main(res):
+    for node in res:
+        ctxt.setContextNode(node)
+        brief = ctxt.xpathEval(".//brief")[0].content
+        src = get_op(".//src")
+        dst = get_op(".//dst")
+
+        if src and dst:
+            print("{:10} {:17} {}".format(mnem, src + "," + dst, brief))
+        elif src:
+            print("{:10} {:17} {}".format(mnem, src, brief))
+        else:
+            print("{:19} {}".format(mnem, brief))
+
+mnem = sys.argv[1].upper()
+doc = libxml2.parseFile("~/x86reference/x86reference.xml")
+ctxt = doc.xpathNewContext()
+res = ctxt.xpathEval("//entry[syntax/mnem='%s']" % mnem)
+main(res)

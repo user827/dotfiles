@@ -1,0 +1,19 @@
+SET my_warn 7
+
+INCLUDE [getenv("HOME")]/.reminders.d/
+; INCLUDE .reminders.d/
+
+
+; TODO DAILY PERIODICS
+; TODO queyiening at cron?
+  ; if the date is the same as with at; the remaind backgrounds itself
+  ; -> autocron to run once a day; NO need for ONCE? -> for ensuring
+  ; BUT fails if comp restarted on the same day
+  ;   And if not sater immediately by autocron
+    ; -> always start with -a IF not already running TODO -> only add remind -a and keep the one in anacron NOTE ONCE
+	; BUT IF no anacron? no roblem
+  ; -> daily reminders by autocron
+  ;  BUT the start time?
+  ;     BUT anacron only uses the date for start calculation and not the hour
+
+; TODO ONCE

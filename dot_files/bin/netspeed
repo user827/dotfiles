@@ -1,0 +1,26 @@
+#!/bin/sh
+set -eu
+
+iface=${1:-}
+if [ -z "$iface" ]; then
+  for iface_path in /sys/class/net/*; do break; done
+  iface=${iface_path##*/}
+fi
+RXPREV=-1
+TXPREV=-1
+TOTALRX=0
+TOTALTX=0
+echo "Listening $iface..."
+while true; do
+  read -r RX < /sys/class/net/"$iface"/statistics/rx_bytes
+  read -r TX < /sys/class/net/"$iface"/statistics/tx_bytes
+  if [ "$RXPREV" != -1 ]; then
+    : $((BWRX=RX-RXPREV)) $((BWTX=TX-TXPREV))
+    : $((TOTALRX=TOTALRX+BWRX)) : $((TOTALTX=TOTALTX+BWTX))
+    printf '\rReceived: %6d KiB/s (%6d MiB)    Sent: %6d KiB/s (%6d MiB)' \
+      $((BWRX/1024)) $((TOTALRX/(1024*1024) )) $((BWTX/1024)) $((TOTALTX/(1024*1024) ))
+  fi
+  RXPREV=$RX
+  TXPREV=$TX
+  sleep 1
+done

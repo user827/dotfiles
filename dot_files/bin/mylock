@@ -1,0 +1,83 @@
+#!/bin/bash
+set -eu
+
+. /usr/lib/myshlib/utils.sh
+. /usr/lib/myshlib/logs2.sh
+
+#saver=saver_mpv_play
+saver=saver_display
+
+warn() {
+  log_sd warn "$*"
+}
+
+error() {
+  log_sd error "$*"
+}
+
+info() {
+  log_sd info "$*"
+}
+
+locker() {
+  #xset s off
+  XSECURELOCK_PASSWORD_PROMPT=time_hex XSECURELOCK_DEBUG_WINDOW_INFO=1 XSECURELOCK_FORCE_GRAB=1 XSECURELOCK_AUTH_TIMEOUT=30 XSECURELOCK_WANT_FIRST_KEYPRESS=1 XSECURELOCK_SAVER="$saver" xsecurelock &
+  local pid=$!
+  #xset s on
+  sleep 5
+  get_spec_from_pid "$pid"
+  if [ -z "$_RET" ]; then
+    if [ -n "${XSS_SLEEP_LOCK_FD:-}" ]; then
+      exec "$XSS_SLEEP_LOCK_FD"<&-
+    fi
+  fi
+  wait "$pid" || return $?
+}
+
+#info "--- locker: $$ ---" || true
+locker && exit 0
+
+warn "locking failed - moving mouse" || true
+
+# locking failed likely becaus cannot acuire the cursor
+xdotool mousemove --sync 20000 20000 click 1 || true
+locker && exit 0
+
+# not needed anymore
+# if mpv fullscreen stuck
+#error "locking failed - pressing f" || true
+#xdotool key f || true
+#sleep 1
+#locker && exit 0
+
+error "locking failed - retrying in 120s" || true
+sleep 120
+locker && exit 0
+
+error "Locking failed! Awesome will be terminated." || true
+
+#http://stackoverflow.com/questions/1526746/bash-trap-of-term-what-am-i-doing-wrong
+# If bash is waiting for a command to complete and receives a signal for which
+# a trap has been set, the trap will not be executed until the command
+# completes. When bash is waiting for an asynchronous command via the wait
+# builtin, the reception of a signal for which a trap has been set will cause
+# the wait builtin to return immediately with an exit status greater than 128,
+# immediately after which the trap is executed.
+# sleep 60 || true
+#sleep 60 &
+#wait "$!" || true
+
+# Hide stuff
+#xset s activate || true
+# NOTE: no value if error occurred
+printf %s\\n "awesome.quit()" | awesome-client && { sleep 15 || true; }
+
+error "still alive means cannot quit awesome - killing everything" || true
+loginctl terminate-session "${XDG_SESSION_ID:-}" && { sleep 5 || true; }
+loginctl terminate-user "$(id -un)" && { sleep 5 || true; }
+
+trap true TERM || true
+#TODO why does not kill the login shell?
+kill -15 -1 && { sleep 30 || true; }
+error "kill -9" || true
+exec kill -9 -1

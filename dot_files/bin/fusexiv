@@ -1,0 +1,27 @@
+#!/bin/sh
+set -eu
+
+root=$(mktemp -d --tmpdir fusexiv.XXXXXXXXXX)
+
+cleanup() {
+  for view in "$root"/*; do
+    name=$(basename -- "$view")
+    echo "umounting: $name"
+    fusermount -u "$view" || true
+    rmdir "$view" || true
+  done
+
+  rmdir "$root"
+}
+trap cleanup 0
+
+for archive; do
+  echo "mounting $archive"
+  name=$(basename -- "$archive")
+  view=$(mktemp -d -p "$root" "$name".XXXXXXXX)
+  if ! fuse-zip -r "$archive" "$view"; then
+    rmdir "$view"
+  fi
+done
+
+sxiv -pr "$root"

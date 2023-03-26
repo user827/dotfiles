@@ -1,0 +1,14 @@
+[Unit]
+Description=Awesome at %I
+After=dbus.service
+Requisite=xserverdummy@%i.service
+After=xserverdummy@%i.service
+
+[Service]
+Type=simple
+# compton unredir does not work with argb
+# --no-argb causest tearing even when vsync is on?
+ExecStart=sudo hidepid /usr/bin/awesome --no-argb
+EnvironmentFile=%t/startx_environ-%I
+Environment=DISPLAY=%I
+SyslogIdentifier=awesome@%I

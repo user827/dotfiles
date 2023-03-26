@@ -1,0 +1,44 @@
+#   Commands in this file are used to set options, bind screen functions to
+#   keys, redefine terminal capabilities, and to automatically establish one or
+#   more windows at the beginning of your screen session.
+#
+#   This is not a comprehensive list of options, look at the screen manual for
+#   details on everything that you can put in this file.
+#
+
+# ------------------------------------------------------------------------------
+# SCREEN SETTINGS
+# ------------------------------------------------------------------------------
+
+#termcapinfo xterm ti@:te@
+altscreen on
+
+# define a bigger scrollback, default is 100 lines
+defscrollback 9999
+# vbell_msg "-----Kyaah!-----"
+# password DEZhJAzklXxdk
+startup_message off
+
+term screen-256color
+#attrcolor b ".I" #Disable for aix style 16 color support
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm' 
+
+# not needed if screen-256color, not screen-256color-bce!
+#defbce on #if screen-256color-bce
+
+nethack on
+
+#startup_message off
+#nethack on
+
+#defflow on # will force screen to process ^S/^Q
+deflogin on
+#autodetach off
+
+# turn visual bell on
+termcapinfo * vb@
+vbell on
+vbell_msg "   Wuff  ----  Wuff!!  "
+vbellwait 0.5
+
+password OOQqD5P6gcmIA

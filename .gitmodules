@@ -1,0 +1,28 @@
+[submodule "data/zsh-autosuggestions"]
+	path = data/zsh-autosuggestions
+	url = https://github.com/zsh-users/zsh-autosuggestions.git
+[submodule "data/zsh-history-substring-search"]
+	path = data/zsh-history-substring-search
+	url = https://github.com/zsh-users/zsh-history-substring-search.git
+[submodule "data/zsh-syntax-highlighting"]
+	path = data/zsh-syntax-highlighting
+	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
+[submodule "vim"]
+	path = vim
+	url = https://github.com/user827/vimfiles.git
+	update = merge
+[submodule "data/awesome-revelation"]
+	path = data/awesome-revelation
+	url = https://github.com/guotsuan/awesome-revelation.git
+[submodule "data/awesome-wm-widgets"]
+	path = data/awesome-wm-widgets
+	url = https://github.com/streetturtle/awesome-wm-widgets.git
+[submodule "data/gef"]
+	path = data/gef
+	url = https://github.com/hugsy/gef.git
+[submodule "data/bat-extras"]
+	path = data/bat-extras
+	url = https://github.com/eth-p/bat-extras.git
+[submodule "data/base16-shell"]
+	path = data/base16-shell
+	url = https://github.com/chriskempson/base16-shell.git

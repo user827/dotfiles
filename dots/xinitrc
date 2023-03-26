@@ -1,0 +1,76 @@
+#!/bin/bash
+
+set -eu
+#Profiling
+#PS4='+ $(date "+%s.%N")\011 '
+#set -x
+
+
+. /usr/lib/myshlib/logs3.sh
+. /usr/lib/myshlib/utils.sh
+
+set +eu
+# start some nice programs
+if [ -d /etc/X11/xinit/xinitrc.d ]; then
+  for f in /etc/X11/xinit/xinitrc.d/?*.sh; do
+    [ -x "$f" ] && . "$f"
+  done
+  unset f
+fi
+set -eu
+
+cleanup() {
+  err=$?
+  if [ $err != 0 ]; then
+    log notice "$0 terminating on error $err"
+  else
+    log notice "$0 terminating"
+  fi
+}
+
+keepsession=$XDG_RUNTIME_DIR/keepsession-$XDG_SESSION_ID
+keepxrunning=$XDG_RUNTIME_DIR/keepxrunning-$XDG_SESSION_ID
+touch "$keepsession" "$keepxrunning"
+
+trap cleanup 0
+
+printf %s "XAUTHORITY=$XAUTHORITY
+XDG_SESSION_ID=$XDG_SESSION_ID
+" > "${XDG_RUNTIME_DIR}/startx_environ-$DISPLAY"
+
+set -a
+. "${XDG_RUNTIME_DIR}/startx_environ-$DISPLAY"
+set +a
+
+xrdb -merge ~/.Xresources
+setxkbmap -layout "us,fi"
+
+nj tmux -L "awesome_${DISPLAY}" new-session -s awe -d || true
+tmux -L "awesome_${DISPLAY}" new-session -s keepalive -d || true
+# need awesome in session in order to let systemd kill all its children so x dies
+# wihout sigterm
+#systemctl --user start "tmux@${DISPLAY}.service"
+
+[ -f ~/.xinitrc.local ] && . ~/.xinitrc.local
+
+# for subshells too
+trap '' TERM INT HUP
+
+exec 3< "$keepsession"
+flock 3
+sudo systemctl start "mytrans$USER@$XDG_SESSION_ID.service"
+
+systemctl --user start --wait "xserverdummy@${DISPLAY}.service" &
+pid1=$!
+
+flock "$keepxrunning" true &
+pid2=$!
+
+wait -n "$pid1" "$pid2"
+
+
+systemctl --user stop "xserverdummy@${DISPLAY}.service"
+
+flock -u 3
+wait -n "$pid1" "$pid2"
+rm -f "$keepsession" "$keepxrunning"

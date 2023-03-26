@@ -1,0 +1,49 @@
+#!/bin/bash
+set -eu
+
+dir=~/Videos/camstreamer
+[ -d "$dir" ] || mkdir "$dir"
+cd "$dir"
+
+i=1
+
+d=$(date +%F-%H-%M)
+if [ $# -ge 1 ]; then
+  out=$d-$i-$1.mkv
+else
+  out=$d-$i.mkv
+fi
+
+echo "saving to $PWD/$out"
+
+
+while [ -e "$out" ]; do
+  i=$((i + 1))
+  if [ $# -ge 1 ]; then
+    out=$d-$i-$1.mkv
+  else
+    out=$d-$i.mkv
+  fi
+done
+
+btime_=$(grep btime /proc/stat | awk '{print $2}')
+read -r utime_ _ < /proc/uptime
+btime_utime_=$(echo "${btime_?} + ${utime_?}" | bc -l)
+ffmpeg -xerror -copyts \
+  -f v4l2 -thread_queue_size 1024 -framerate 30 -input_format mjpeg -video_size 1920x1080 -i /dev/video0 \
+  -f pulse -thread_queue_size 1024 -i default \
+  -pix_fmt yuv420p -c:v libx264 -preset superfast \
+  -ac 2 -b:a 190k -c:a libopus \
+  -af "asetpts=PTS-${btime_utime_?}/TB" \
+  -vf "setpts=PTS-${utime_?}/TB" \
+  "$out" \
+  -pix_fmt yuv420p -f sdl2 -window_enable_quit 0 -window_size 1280x720 "Webcam"
+  # mpv --cache=no --no-input-default-bindings --no-input-terminal --keep-open=no -
+  #ffplay -probesize 32 -sync ext -
+  # 640x360
+
+# https://video.stackexchange.com/questions/10368/video-capture-using-ffmpeg-v4l2-indev-results-in-bad-a-v-sync
+# https://superuser.com/questions/1584945/ffmpeg-audio-start-time-way-off
+# https://stackoverflow.com/questions/16658873/how-to-minimize-the-delay-in-a-live-streaming-with-ffmpeg
+# https://trac.ffmpeg.org/wiki/Encode/HighQualityAudio
+# https://www.reddit.com/r/ffmpeg/comments/oa9f0x/ffmpeg_audio_aac_vs_opus/

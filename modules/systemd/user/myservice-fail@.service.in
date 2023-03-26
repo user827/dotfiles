@@ -1,0 +1,14 @@
+[Unit]
+Description=My service failed at %I
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/sh @startups@/systemd-email.sh %I
+#AmbientCapabilities=CAP_SETGID CAP_SETUID
+#CapabilityBoundingSet=~
+#SecureBits=
+#SystemCallFilter=
+#NoNewPrivileges=false
+#SystemCallArchitectures=
+#RestrictAddressFamilies=
+

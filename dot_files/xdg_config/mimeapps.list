@@ -1,0 +1,14 @@
+[Default Applications]
+application/pdf=org.pwmt.zathura.desktop
+text/plain=terminalnvim.desktop
+text/html=firefox.desktop
+x-scheme-handler/http=firefox.desktop
+x-scheme-handler/https=firefox.desktop
+image/jpeg=nsxiv.desktop
+image/png=nsxiv.desktop
+image/tiff=nsxiv.desktop
+image/tiff=nsxiv.desktop
+application/x-bittorrent=tormv.desktop
+x-scheme-handler/magnet=tormv-magnet.desktop
+x-scheme-handler/chrome=firefox.desktop
+application/xhtml+xml=firefox.desktop

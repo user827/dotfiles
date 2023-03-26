@@ -1,0 +1,8 @@
+; TOPRIV
+
+; Found in Suomi.rem
+REM Sun Nov 8 +[my_warn] %"%"Isänpäivä %b on %a
+REM May 1 +[my_warn] Vappu %b
+#REM Sun Mar 22 *7 +7 SATISFY [trigdate() < Apr 25 Pääsiäisriski %b on %a
+
+; vim: ft=remind

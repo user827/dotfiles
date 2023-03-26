@@ -1,0 +1,11 @@
+_profile_source() {
+  local f envdir="${XDG_CONFIG_DIR:-$HOME/.config/environment.d/}"
+  for f in "$envdir"/*.conf; do
+    set -a
+    source "$f"
+    set +a
+  done
+}
+_profile_source
+
+[ ! -f "$HOME/.profile.local" ] || source "$HOME/.profile.local"

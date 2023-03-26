@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+
+[ -f ~/.firefox_video ] && read -r profile < ~/.firefox_video || profile=default
+tmp=$(mktemp -d)
+
+places=$tmp/places.sqlite
+cp ~/.mozilla/firefox/*."$profile"/places.sqlite "$places"
+
+last_url=$(sqlite3 "$places" 'select a.url from moz_places a, moz_historyvisits b where a.id=b.place_id ORDER BY b.visit_date DESC LIMIT 1')
+rm -rf "$tmp"
+#exec youm "$last_url"
+exec mpv "$last_url"

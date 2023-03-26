@@ -1,0 +1,579 @@
+# boldbright explanation
+# https://github.com/huyz/irssi-colors-solarized
+# light mode better for eyes:
+# https://www.nngroup.com/articles/dark-mode/
+
+bell:
+  animation: EaseOutExpo
+
+  # Duration of the visual bell flash. A `duration` of `0` will disable the
+  # visual bell animation.
+  duration: 50
+
+  # Visual bell animation color.
+  color: '#ffffff'
+
+font:
+  size: 11
+  normal:
+    family: SauceCodePro Nerd Font Mono
+    # family: UbuntuMono Nerd Font Mono
+    style: Regular
+
+  bold:
+    family: SauceCodePro Nerd Font Mono
+    # family: UbuntuMono Nerd Font Mono
+    style: Bold
+
+  italic:
+    family: SauceCodePro Nerd Font Mono
+    # family: UbuntuMono Nerd Font Mono
+    style: Italic
+
+  bold_italic:
+    family: SauceCodePro Nerd Font Mono
+    # family: UbuntuMono Nerd Font Mono
+    style: Bold Italic
+
+# ateliers...
+#   forest, estuary
+# papeercolor
+
+#
+# Base16 Solarized Dark 256 - alacritty color config
+# Ethan Schoonover (modified by aramisgithub)
+colors:
+  # Default colors
+  primary:
+    background: '0x002b36'
+    foreground: '0x93a1a1'
+
+  # Colors the cursor will use if `custom_cursor_colors` is true
+  cursor:
+    text: '0x002b36'
+    cursor: '0x93a1a1'
+
+  # Normal colors
+  normal:
+    black:   '0x002b36'
+    red:     '0xdc322f'
+    green:   '0x859900'
+    yellow:  '0xb58900'
+    blue:    '0x268bd2'
+    magenta: '0x6c71c4'
+    cyan:    '0x2aa198'
+    white:   '0x93a1a1'
+
+  # Bright colors
+  bright:
+    black:   '0x657b83'
+    red:     '0xdc322f'
+    green:   '0x859900'
+    yellow:  '0xb58900'
+    blue:    '0x268bd2'
+    magenta: '0x6c71c4'
+    cyan:    '0x2aa198'
+    white:   '0xfdf6e3'
+
+  indexed_colors:
+    - { index: 16, color: '0xcb4b16' }
+    - { index: 17, color: '0xd33682' }
+    - { index: 18, color: '0x073642' }
+    - { index: 19, color: '0x586e75' }
+    - { index: 20, color: '0x839496' }
+    - { index: 21, color: '0xeee8d5' }
+
+  vi_mode_cursor:
+    text: '#000000'
+    cursor: '#ff0000'
+draw_bold_text_with_bright_colors: false
+
+# mymodified
+# https://github.com/cormacrelf/vim-colors-github
+#colors:
+#  # Default colors
+#  primary:
+#    background: '0xf6f8fa'  # base00
+#    foreground: '0x2b3137'  # base05
+#
+#  # Colors the cursor will use if `custom_cursor_colors` is true
+#  cursor:
+#    text: '0xf6f8fa'  # base00
+#    cursor: '0x24292e'  # base05
+#
+#  # Normal colors
+#  normal:
+#    black:   '0xf6f8fa'  # base00
+#    red:     '0xd73a49'  # base08
+#    green:   '0x8700af'  # base0B
+#    yellow:  '0xd75f00'  # base0A
+#    blue:    '0x005cc5'  # base0D
+#    magenta: '0xd70087'  # base0E
+#    cyan:    '0x22863a'  # base0C
+#    white:   '0x24292e'  # base05
+#
+#  # Bright colors
+#  bright:
+#    black:   '0x76787b'  # base03 mutt status fg
+#    red:     '0xb31d28'
+#    green:   '0x8700af'
+#    yellow:  '0xe36209'
+#    blue:    '0x032f62'
+#    magenta: '0xf18338'
+#    cyan:    '0x032f62'
+#    white:   '0x24292e'  # base07
+#
+#  indexed_colors:
+#    - { index: 16, color: '0xe36209' }  # base09
+#    - { index: 17, color: '0x005cc5' }  # base0F
+#    - { index: 18, color: '0xe0e7ef' }  # base01 status bg
+#    - { index: 19, color: '0xc8d1db' }  # base02
+#    - { index: 20, color: '0x63686c' }  # base04
+#    - { index: 21, color: '0x24292e' }  # base06
+#
+#  vi_mode_cursor:
+#    text: '#000000'
+#    cursor: '#ff0000'
+#draw_bold_text_with_bright_colors: false
+
+## mymodified
+## https://github.com/cormacrelf/vim-colors-github
+#colors:
+#  # Default colors
+#  primary:
+#    background: '0xf6f8fa'  # base00
+#    foreground: '0x2b3137'  # base05
+#
+#  # Colors the cursor will use if `custom_cursor_colors` is true
+#  cursor:
+#    text: '0xf6f8fa'  # base00
+#    cursor: '0x24292e'  # base05
+#
+#  # Normal colors
+#  normal:
+#    black:   '0xf6f8fa'  # base00
+#    red:     '0xd73a49'  # base08
+#    green:   '0x22863a'  # base0B
+#    yellow:  '0xf18338'  # base0A
+#    blue:    '0x005cc5'  # base0D
+#    magenta: '0x6f42c1'  # base0E
+#    cyan:    '0x005cc5'  # base0C
+#    white:   '0x24292e'  # base05
+#
+#  # Bright colors
+#  bright:
+#    black:   '0x76787b'  # base03 mutt status fg
+#    red:     '0xb31d28'
+#    green:   '0x3ebc5c'
+#    yellow:  '0xe36209'
+#    blue:    '0x032f62'
+#    magenta: '0x45267d'
+#    cyan:    '0x032f62'
+#    white:   '0x24292e'  # base07
+#
+#  indexed_colors:
+#    - { index: 16, color: '0xe36209' }  # base09
+#    - { index: 17, color: '0x005cc5' }  # base0F
+#    - { index: 18, color: '0xe0e7ef' }  # base01 status bg
+#    - { index: 19, color: '0xc8d1db' }  # base02
+#    - { index: 20, color: '0x63686c' }  # base04
+#    - { index: 21, color: '0x24292e' }  # base06
+#
+#  vi_mode_cursor:
+#    text: '#000000'
+#    cursor: '#ff0000'
+#draw_bold_text_with_bright_colors: false
+
+
+## mymodified
+## https://github.com/kristijanhusak/vim-hybrid-material/blob/master/base16-material/base16-material.light.sh
+## https://github.com/kristijanhusak/vim-hybrid-material/blob/master/base16-material/material.yaml
+#colors:
+#  # Default colors
+#  primary:
+#    background: '0xe4e4e4'  # base00
+#    foreground: '0x000000'  # base05
+#
+#  # Colors the cursor will use if `custom_cursor_colors` is true
+#  cursor:
+#    text: '0xe4e4e4'  # base00
+#    cursor: '0x000000'  # base05
+#
+#  # Normal colors
+#  normal:
+#    black:   '0xe4e4e4'  # base00
+#    red:     '0x5f0000'  # base08
+#    green:   '0x005f00'  # base0B
+#    yellow:  '0x5f5f00'  # base0A
+#    blue:    '0x00005f'  # base0D
+#    magenta: '0x5f005f'  # base0E
+#    cyan:    '0x005f5f'  # base0C
+#    white:   '0x000000'  # base05
+#
+#  # Bright colors
+#  bright:
+#    black:   '0x808080'  # base03
+#    red:     '0x5f0000'  # base08
+#    green:   '0x005f00'  # base0B
+#    yellow:  '0x5f5f00'  # base0A
+#    blue:    '0x00005f'  # base0D
+#    magenta: '0x5f005f'  # base0E
+#    cyan:    '0x005f5f'  # base0C
+#    white:   '0x000000'  # base07
+#
+#  indexed_colors:
+#    - { index: 16, color: '0x875f00' }  # base09
+#    - { index: 17, color: '0x00005f' }  # base0F
+#    - { index: 18, color: '0xd0d0d0' }  # base01
+#    - { index: 19, color: '0xbcbcbc' }  # base02
+#    - { index: 20, color: '0x5f5f5f' }  # base04
+#    - { index: 21, color: '0x282a2e' }  # base06
+#
+#  vi_mode_cursor:
+#    text: '#000000'
+#    cursor: '#ff0000'
+#draw_bold_text_with_bright_colors: true
+
+    ## Base16 Solarized Light 256 - alacritty color config
+    ## Ethan Schoonover (modified by aramisgithub)
+    #colors:
+    #  # Default colors
+    #  primary:
+    #    background: '0xfdf6e3'
+    #    foreground: '0x586e75'
+    #
+    #  # Colors the cursor will use if `custom_cursor_colors` is true
+    #  cursor:
+    #    text: '0xfdf6e3'
+    #    cursor: '0x586e75'
+    #
+    #  # Normal colors
+    #  normal:
+    #    black:   '0xfdf6e3'
+    #    red:     '0xdc322f'
+    #    green:   '0x859900'
+    #    yellow:  '0xb58900'
+    #    blue:    '0x268bd2'
+    #    magenta: '0x6c71c4'
+    #    cyan:    '0x2aa198'
+    #    white:   '0x586e75'
+    #
+    #  # Bright colors
+    #  bright:
+    #    black:   '0x839496'
+    #    red:     '0xdc322f'
+    #    green:   '0x859900'
+    #    yellow:  '0xb58900'
+    #    blue:    '0x268bd2'
+    #    magenta: '0x6c71c4'
+    #    cyan:    '0x2aa198'
+    #    white:   '0x002b36'
+    #
+    #  indexed_colors:
+    #    - { index: 16, color: '0xcb4b16' }
+    #    - { index: 17, color: '0xd33682' }
+    #    - { index: 18, color: '0xeee8d5' }
+    #    - { index: 19, color: '0x93a1a1' }
+    #    - { index: 20, color: '0x657b83' }
+    #    - { index: 21, color: '0x073642' }
+    #
+    #  vi_mode_cursor:
+    #     text: '#000000'
+    #     cursor: '#ff0000'
+    #
+    #draw_bold_text_with_bright_colors: true
+
+    ## Base16 Google Light 256 - alacritty color config
+    ## Seth Wright (http://sethawright.com)
+    #colors:
+    #  # Default colors
+    #  primary:
+    #    background: '0xffffff'
+    #    foreground: '0x373b41'
+    #
+    #  # Colors the cursor will use if `custom_cursor_colors` is true
+    #  cursor:
+    #    text: '0xffffff'
+    #    cursor: '0x373b41'
+    #
+    #  # Normal colors
+    #  normal:
+    #    black:   '0xffffff'
+    #    red:     '0xcc342b'
+    #    green:   '0x198844'
+    #    yellow:  '0xfba922'
+    #    blue:    '0x3971ed'
+    #    magenta: '0xa36ac7'
+    #    cyan:    '0x3971ed'
+    #    white:   '0x373b41'
+    #
+    #  # Bright colors
+    #  bright:
+    #    black:   '0xb4b7b4'
+    #    red:     '0xcc342b'
+    #    green:   '0x198844'
+    #    yellow:  '0xfba922'
+    #    blue:    '0x3971ed'
+    #    magenta: '0xa36ac7'
+    #    cyan:    '0x3971ed'
+    #    white:   '0x1d1f21'
+    #
+    #  indexed_colors:
+    #    - { index: 16, color: '0xf96a38' }
+    #    - { index: 17, color: '0x3971ed' }
+    #    - { index: 18, color: '0xe0e0e0' }
+    #    - { index: 19, color: '0xc5c8c6' }
+    #    - { index: 20, color: '0x969896' }
+    #    - { index: 21, color: '0x282a2e' }
+    #
+    #  vi_mode_cursor:
+    #     text: '#000000'
+    #     cursor: '#ff0000'
+    #
+    #draw_bold_text_with_bright_colors: true
+
+    ## Base16 Tomorrow 256 - alacritty color config
+    ## Chris Kempson (http://chriskempson.com)
+    #colors:
+    #  # Default colors
+    #  primary:
+    #    background: '0xffffff'
+    #    foreground: '0x4d4d4c'
+    #
+    #  # Colors the cursor will use if `custom_cursor_colors` is true
+    #  cursor:
+    #    text: '0xffffff'
+    #    cursor: '0x4d4d4c'
+    #
+    #  # Normal colors
+    #  normal:
+    #    black:   '0xffffff'
+    #    red:     '0xc82829'
+    #    green:   '0x718c00'
+    #    yellow:  '0xeab700'
+    #    blue:    '0x4271ae'
+    #    magenta: '0x8959a8'
+    #    cyan:    '0x3e999f'
+    #    white:   '0x4d4d4c'
+    #
+    #  # Bright colors
+    #  bright:
+    #    black:   '0x8e908c'
+    #    red:     '0xc82829'
+    #    green:   '0x718c00'
+    #    yellow:  '0xeab700'
+    #    blue:    '0x4271ae'
+    #    magenta: '0x8959a8'
+    #    cyan:    '0x3e999f'
+    #    white:   '0x1d1f21'
+    #
+    #  indexed_colors:
+    #    - { index: 16, color: '0xf5871f' }
+    #    - { index: 17, color: '0xa3685a' }
+    #    - { index: 18, color: '0xe0e0e0' }
+    #    - { index: 19, color: '0xd6d6d6' }
+    #    - { index: 20, color: '0x969896' }
+    #    - { index: 21, color: '0x282a2e' }
+    #
+    #  vi_mode_cursor:
+    #     text: '#000000'
+    #     cursor: '#ff0000'
+    #
+    #draw_bold_text_with_bright_colors: true
+## Base16 Atelier Forest Light 256 - alacritty color config
+## Bram de Haan (http://atelierbramdehaan.nl)
+#colors:
+#  # Default colors
+#  primary:
+#    background: '0xf1efee'
+#    foreground: '0x68615e'
+#
+#  # Colors the cursor will use if `custom_cursor_colors` is true
+#  cursor:
+#    text: '0xf1efee'
+#    cursor: '0x68615e'
+#
+#  # Normal colors
+#  normal:
+#    black:   '0xf1efee'
+#    red:     '0xf22c40'
+#    green:   '0x7b9726'
+#    yellow:  '0xc38418'
+#    blue:    '0x407ee7'
+#    magenta: '0x6666ea'
+#    cyan:    '0x3d97b8'
+#    white:   '0x68615e'
+#
+#  # Bright colors
+#  bright:
+#    black:   '0x9c9491'
+#    red:     '0xf22c40'
+#    green:   '0x7b9726'
+#    yellow:  '0xc38418'
+#    blue:    '0x407ee7'
+#    magenta: '0x6666ea'
+#    cyan:    '0x3d97b8'
+#    white:   '0x1b1918'
+#
+#  indexed_colors:
+#    - { index: 16, color: '0xdf5320' }
+#    - { index: 17, color: '0xc33ff3' }
+#    - { index: 18, color: '0xe6e2e0' }
+#    - { index: 19, color: '0xa8a19f' }
+#    - { index: 20, color: '0x766e6b' }
+#    - { index: 21, color: '0x2c2421' }
+#
+#  vi_mode_cursor:
+#     text: '#000000'
+#     cursor: '#ff0000'
+#
+#draw_bold_text_with_bright_colors: true
+
+      ## Base16 Default Light 256 - alacritty color config
+      ## Chris Kempson (http://chriskempson.com)
+      #colors:
+      #  # Default colors
+      #  primary:
+      #    background: '0xf8f8f8'
+      #    foreground: '0x383838'
+      #
+      #  # Colors the cursor will use if `custom_cursor_colors` is true
+      #  cursor:
+      #    text: '0xf8f8f8'
+      #    cursor: '0x383838'
+      #
+      #  # Normal colors
+      #  normal:
+      #    black:   '0xf8f8f8'
+      #    red:     '0xab4642'
+      #    green:   '0xa1b56c'
+      #    yellow:  '0xf7ca88'
+      #    blue:    '0x7cafc2'
+      #    magenta: '0xba8baf'
+      #    cyan:    '0x86c1b9'
+      #    white:   '0x383838'
+      #
+      #  # Bright colors
+      #  bright:
+      #    black:   '0xb8b8b8'
+      #    red:     '0xab4642'
+      #    green:   '0xa1b56c'
+      #    yellow:  '0xf7ca88'
+      #    blue:    '0x7cafc2'
+      #    magenta: '0xba8baf'
+      #    cyan:    '0x86c1b9'
+      #    white:   '0x181818'
+      #
+      #  indexed_colors:
+      #    - { index: 16, color: '0xdc9656' }
+      #    - { index: 17, color: '0xa16946' }
+      #    - { index: 18, color: '0xe8e8e8' }
+      #    - { index: 19, color: '0xd8d8d8' }
+      #    - { index: 20, color: '0x585858' }
+      #    - { index: 21, color: '0x282828' }
+      #  vi_mode_cursor:
+      #     text: '#000000'
+      #     cursor: '#ff0000'
+      #draw_bold_text_with_bright_colors: true
+
+    ## https://github.com/kristijanhusak/vim-hybrid-material/blob/master/base16-material/base16-material.light.sh
+    ## https://github.com/kristijanhusak/vim-hybrid-material/blob/master/base16-material/material.yaml
+    #colors:
+    #  # Default colors
+    #  primary:
+    #    #background: '0x263238'  # base00
+    #    #foreground: '0xecefef'  # base05
+    #    background: '0xffffff'  # base07
+    #    foreground: '0x37474f'  # base02
+    #
+    #  # Colors the cursor will use if `custom_cursor_colors` is true
+    #  cursor:
+    #    text: '0x263238'  # base00
+    #    #cursor: '0xecefef'  # base05
+    #    cursor: '0x37474f'  # base02
+    #
+    #  # Normal colors
+    #  normal:
+    #    black:   '0x263238'  # base00
+    #    red:     '0xcc6666'  # base08
+    #    green:   '0xb5bd68'  # base0B
+    #    yellow:  '0xf0c674'  # base0A
+    #    blue:    '0x81a2be'  # base0D
+    #    magenta: '0xb294bb'  # base0E
+    #    cyan:    '0x8abeb7'  # base0C
+    #    white:   '0xecefef'  # base05
+    #
+    #  # Bright colors
+    #  bright:
+    #    black:   '0x707880'  # base03
+    #    red:     '0xcc6666'  # base08
+    #    green:   '0xb5bd68'  # base0B
+    #    yellow:  '0xf0c674'  # base0A
+    #    blue:    '0x81a2be'  # base0D
+    #    magenta: '0xb294bb'  # base0E
+    #    cyan:    '0x8abeb7'  # base0C
+    #    white:   '0xffffff'  # base07
+    #
+    #  indexed_colors:
+    #    - { index: 16, color: '0xcc6666' }  # base09
+    #    - { index: 17, color: '0xcc6666' }  # base0F
+    #    - { index: 18, color: '0x263238' }  # base01
+    #    - { index: 19, color: '0x37474f' }  # base02
+    #    - { index: 20, color: '0xb5bd68' }  # base04
+    #    - { index: 21, color: '0xecefef' }  # base06
+    #
+    #  vi_mode_cursor:
+    #    text: '#000000'
+    #    cursor: '#ff0000'
+    #draw_bold_text_with_bright_colors: true
+
+    ## Base16 Gruvbox light, medium 256 - alacritty color config
+    ## Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
+    #colors:
+    #  # Default colors
+    #  primary:
+    #    background: '0xfbf1c7'  # base00
+    #    foreground: '0x504945'  # base05
+    #
+    #  # Colors the cursor will use if `custom_cursor_colors` is true
+    #  cursor:
+    #    text: '0xfbf1c7'  # base00
+    #    cursor: '0x504945'  # base05
+    #
+    #  # Normal colors
+    #  normal:
+    #    black:   '0xfbf1c7'  # base00
+    #    red:     '0x9d0006'  # base08
+    #    green:   '0x79740e'  # base0B
+    #    yellow:  '0xb57614'  # base0A
+    #    blue:    '0x076678'  # base0D
+    #    magenta: '0x8f3f71'  # base0E
+    #    cyan:    '0x427b58'  # base0C
+    #    white:   '0x504945'  # base05
+    #
+    #  # Bright colors
+    #  bright:
+    #    black:   '0xbdae93'  # base03
+    #    red:     '0x9d0006'  # base08
+    #    green:   '0x79740e'  # base0B
+    #    yellow:  '0xb57614'  # base0A
+    #    blue:    '0x076678'  # base0D
+    #    magenta: '0x8f3f71'  # base0E
+    #    cyan:    '0x427b58'  # base0C
+    #    white:   '0x282828'  # base07
+    #
+    #  indexed_colors:
+    #    - { index: 16, color: '0xaf3a03' }  # base09
+    #    - { index: 17, color: '0xd65d0e' }  # base0F
+    #    - { index: 18, color: '0xebdbb2' }  # base01
+    #    - { index: 19, color: '0xd5c4a1' }  # base02
+    #    - { index: 20, color: '0x665c54' }  # base04
+    #    - { index: 21, color: '0x3c3836' }  # base06
+    #
+    #  vi_mode_cursor:
+    #    text: '#000000'
+    #    cursor: '#ff0000'
+    #
+    #draw_bold_text_with_bright_colors: true
+
+

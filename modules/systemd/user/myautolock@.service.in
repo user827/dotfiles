@@ -1,0 +1,19 @@
+[Unit]
+OnFailure=myautolock-fail@%i.service
+Description=My screen locker at %I
+
+[Service]
+Type=simple
+#ExecStart=/usr/bin/sh @userhome@/bin/myautolock
+# the last argument is needed to make the notfier launch
+# the first argument should be less than dpms, so that the dimming effect is seen
+ExecStartPre=/usr/bin/xset s 300 5
+ExecStart=/usr/bin/nj /usr/bin/xss-lock -n /usr/lib/xsecurelock/dimmer -l -- /usr/bin/sh mylock
+Restart=always
+StartLimitInterval=60
+StartLimitBurst=30
+RestartSec=1s
+SyslogIdentifier=myautolock@%I
+Environment=XSECURELOCK_DIM_TIME_MS=20000
+# as x dies before this...
+SuccessExitStatus=5

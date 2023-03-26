@@ -1,0 +1,64 @@
+nvim
+tmux
+awesome
+
+fd
+rg
+fzf
+bat
+
+- for `mail` command
+  s-nail
+mutt
+
+noto-fonts-emoji
+nerd-fonts-source-code-pro
+  xorg-mkfontscale
+
+alacritty
+
+mytrans<user>.service
+
+xss-lock
+xdotool
+xsecurelock
+mpv
+
+
+lua5.4
+- for vim plugin
+
+pulseaudio
+pulseaudio-alsa
+- for volume widget
+  alsautils
+  arc-icon-theme
+  arc-gtk-theme
+
+sudo config:
+  USER ALL=(root) NOPASSWD: AN, MYNETJAIL, /usr/bin/hidepid
+
+  Cmnd_Alias TRANSUSER = /usr/bin/systemctl start mytransUSER@*.service
+  Defaults!TRANSUSER !requiretty
+  USER ALL=(root) NOPASSWD: TRANSUSER
+
+xorg-xinit
+xorg-server
+xorg-xset
+
+
+python-pynvim
+language servers...
+
+gtk2
+- for pinentry
+
+byobu
+
+remind
+
+# todo still needed?
+xwinwrap
+ctags
+
+# remove account lock after 3 failed attempts

@@ -1,0 +1,22 @@
+set ssl_force_tls = yes
+set send_charset = utf-8
+set use_8bitmime
+set timeout = 10
+
+#Pager View
+set menu_scroll
+set pager_index_lines = 10
+
+set date_format = "!%b %d %R"
+#Need to stay cool with bang when changing locales
+set index_format="%4C %Z %d %-15.15L (%?l?%4l&%4c?) %s"
+set folder_format="%2C %t %N %F %2l %-8.8u %-8.8g %8s %D %f"
+
+# Folders
+set folder="~/Mail"                # Mailboxes in here
+set record="+sent"                 # where to store sent messages
+set postponed="+postponed"         # where to store draft messages
+set mbox="+mbox" # Folder into which read mail in your `` $spoolfile'' folder will be appended.
+
+# source "`case $TERM in linux) echo -n /dev/null ;; *) echo -n ~/.mutt/mutt-colors-solarized-dark-16-256ncurses.muttrc ;; esac`"
+source "`case $TERM in linux) echo -n /dev/null ;; *) echo -n ~/.mutt/base16-gruvbox.light.256.muttrc ;; esac`"

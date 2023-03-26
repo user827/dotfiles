@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+
+if [ "$1" = -r ]; then
+  shift
+  out=$1.tar.zst.gpg
+  tar --zstd -c "$1" | gpg --sign --symmetric -o "$out"
+else
+  out=$1.gpg
+  gpg --sign --symmetric -o "$out" "$1"
+fi
+
+echo "Encrypted into $out"

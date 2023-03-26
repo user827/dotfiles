@@ -1,0 +1,32 @@
+# Maintainer: me
+
+pkgname=myhome
+pkgver=0.3.1
+pkgrel=1
+arch=('any')
+depends=(
+compton
+
+firefox
+otf-ipafont
+ttf-ubuntu-font-family
+#gnu-free-fonts
+#tf-unifont
+
+sound-theme-freedesktop
+libnotify
+
+rxvt-unicode
+
+xsecurelock
+
+ibus
+ibus-anthy
+
+awesome
+
+xdotool
+
+xorg-xinit
+)
+optdepends=('gvim' 'chromium')

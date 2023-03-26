@@ -1,0 +1,104 @@
+! Xft settings ---------------------------------------------------------------
+
+!TODO prevent global settings
+!Xft.dpi:        96
+! Xft.antialias:  true
+!Xft.antialias:  false
+!Xft.rgba:       none
+!Xft.hinting:    false
+!Xft.hintstyle:  hintnone
+
+
+! Colors ---------------------------------------------------------------------
+
+! my github base16
+! keep in sync with my alacritty config
+! black
+#define base00        #f6f8fa
+#define base01        #e0e7ef
+#define base02        #c8d1db
+! bright black
+#define base03        #76787b
+  #define base04        #63686c
+! white
+#define base05        #24292e
+#define base06        #24292e
+! bright white
+#define base07        #24292e
+! red
+#define base08        #d73a49
+#define base09        #e36209
+! yellow
+#define base0A        #f18338
+! green
+#define base0B        #22863a
+! cyan
+#define base0C        #005cc5
+! blue
+#define base0D        #005cc5
+! magenta
+#define base0E        #6f42c1
+#define base0F        #005cc5
+
+*foreground:            base05
+*background:            base00
+*fadeColor:             base03
+*cursorColor:           base05
+*cursorColor2:           base00
+!*pointerColorBackground:S_base01
+!*pointerColorForeground:S_base1
+
+*color0:                base00
+*color1:                base08
+*color2:                base0B
+*color3:                base0A
+*color4:                base0D
+*color5:                base0E
+*color6:                base0C
+*color7:                base05
+
+*color8:                base03
+*color9:                #b31d28
+*color10:               #3ebc5c
+*color11:               #e36209
+*color12:               #032f62
+*color13:               #45267d
+*color14:               #032f62
+*color15:               base07
+
+! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
+! use 'shell' template to set these if necessary
+*color16:      base09
+*color17:      base0F
+*color18:      base01
+*color19:      base02
+*color20:      base04
+*color21:      base06
+
+!TODO: ?? ( 21-Feb-2013, John Doe )
+! root*background:  #3a1a1a
+
+!*font:                   serif
+!*Font:                   monospace
+
+!SshAskpass*Font:                   sans serif 11
+!! TODO x11-ssh-askpass does not recognize bare *Background
+!SshAskpass*Background:             #f5f6f7
+!SshAskpass*Foreground:             #5c616c
+!SshAskpass.Button*background:      #fcfdfd
+!SshAskpass.Button.horizontalSpacing: 16
+!SshAskpass.Button.verticalSpacing: 7
+!SshAskpass.VerticalSpacing:        10
+!SshAskpass.HorizontalSpacing:      10
+!SshAskpass.Indicator*foreground:   base0D
+!SshAskpass.Indicator*background:   base06
+!SshAskpass*borderWidth:           1
+!SshAskpass*borderColor:           #cfd6e6
+!SshAskpass*background.pressed:     #d3d8e2
+!SshAskpass*background.hover:       #ffffff
+!!! for debugging
+!SshAskpass*grabKeyboard:           false
+!
+!SshAskpass*topShadowColor:         base00
+!SshAskpass*bottomShadowColor:      base05
+!SshAskpass*shadowThickness:        5

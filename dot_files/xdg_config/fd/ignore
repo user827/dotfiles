@@ -1,0 +1,10 @@
+.git/
+.hg/
+target/
+build/
+.cache/
+.rustup/
+.cargo/
+.gem/
+.vimundo/
+.vimswap/

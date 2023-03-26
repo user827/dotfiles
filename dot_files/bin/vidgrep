@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+file=$1
+shift
+ffmpeg -loglevel warning -i "$file" -map 0:s:0 -f ass - | grep "$@"

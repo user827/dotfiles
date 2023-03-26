@@ -1,0 +1,16 @@
+[Unit]
+Description=Compton at %I
+Before=awesome@%i.service
+Requisite=xserverdummy@%i.service
+After=xserverdummy@%i.service
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/sh @startups@/compton.sh
+# as x dies before this... aand tries to restart when cannot anymore
+#Restart=always
+#RestartSec=1s
+SyslogIdentifier=compton@%I
+
+[Install]
+WantedBy=awesome@.service

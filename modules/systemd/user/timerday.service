@@ -1,0 +1,8 @@
+[Unit]
+Description=Timer daily
+OnFailure=myservice-fail@%N.service
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/myrunparts %h/cron.daily
+SyslogIdentifier=timerday

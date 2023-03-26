@@ -1,0 +1,12 @@
+import:
+  - ~/.config/alacritty/colors.yml
+
+window:
+  dimensions:
+    columns: 135
+    lines: 38
+
+shell:
+  program: /bin/zsh
+  args:
+    - --login

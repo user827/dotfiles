@@ -1,0 +1,32 @@
+#!/bin/sh
+set -eum
+
+if [ "${1:-}" = --logged ]; then
+  shift
+else
+  exec systemd-cat -p err -t myx@vt"$XDG_VTNR" --level-prefix=yes sh "$0" --logged "$@" || ret=$?
+fi
+
+. /usr/lib/myshlib/logs3.sh
+. /usr/lib/myshlib/utils.sh
+
+cleanfun() {
+  local ret=$?
+  if [ $ret != 0 ]; then
+    log error "unclean exit ($ret)"
+  fi
+}
+
+trap 'cleanfun' 0
+
+# prevent term or hup killing startx when shutting down
+trap '' TERM HUP
+# why does it get stuck without keeptty?
+systemd-cat -t startx@vt"$XDG_VTNR" startx -- vt"$XDG_VTNR" -nolisten tcp -keeptty -verbose 3 -logfile /dev/null -logverbose 0 "$@" &
+
+# cannot run startx on background... so cannot get traps asap... unless set -m
+pid=$!
+
+waitpid "$pid" startx
+
+log notice "exit"

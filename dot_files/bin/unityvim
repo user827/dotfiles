@@ -1,0 +1,9 @@
+#!/bin/sh
+set -u
+line=$1
+shift
+nvr --nostart --servername unity --remote-tab-silent --remote-send "${line}G" -- "$@"
+if [ $? != 0 ]; then
+  echo starting new server
+  tmux -L "awesome_$DISPLAY" new-window nvr --servername unity --remote-tab-silent --remote-send "${line}G" -- "$@"
+fi

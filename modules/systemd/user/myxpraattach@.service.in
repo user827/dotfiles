@@ -1,0 +1,22 @@
+#requires for performance:
+#pacmatic -S python-pyopencl python2-pyopencl opencl-mesa
+#aurmatic -S python2-gtkglext
+
+[Unit]
+Description=my xpra client at %i
+#No need when using socket activation? -> Need for xpra socket too
+#TODO 100 to attach display
+
+[Service]
+Type=simple
+#EnvironmentFile=%h/.config/xpra_client
+ExecStartPre=/usr/bin/sudo systemctl start myxpravfirefox.service
+ExecStart=/usr/bin/xpra attach --socket-dir=/run/xpravfirefox --mmap=/run/xpravfirefox/mmapfile --no-keyboard-sync --tray=yes --pings=no :100
+KillSignal=SIGINT
+#TODO input-method=keep
+#TODO returns 1 on exit
+SuccessExitStatus=1 143 130
+Environment=XPRA_BATCH_MAX_DELAY=5
+
+[Install]
+WantedBy=multi-user.target

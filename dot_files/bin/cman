@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -eu
+
+search=$1
+shift
+#got broken? PAGER="less -g -s '+/^     (|  )"$term"(\\$|[^[:alnum:]])'" man "$@"
+#MANPAGER="less -g -s '+/^     (|  )$search[^[:alnum:]]'" man "$@"
+#MANPAGER="nvim Man! '+/^     (|  )$search[^[:alnum:]]'" man "$@"
+#MANPAGER="vim -c 'Mk $search' -" man "$@"
+#MANPAGER="nvim -c 'Man!' -c 'Mk $search'" man "$@"
+MANPAGER="nvim -c 'Man!' -c '/^     \(\|  \)$search\\>'" man "$@"
+#MANPAGER="$HOME/bin/manpager $search" man "$@"
+
+cman "$@"

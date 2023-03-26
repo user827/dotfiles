@@ -1,0 +1,55 @@
+#!/bin/sh
+
+set -eu
+
+#VIM=/usr/local/bin/vim
+VIM=vim
+SERVERNAME=VIM
+
+if [ -n "${DISPLAY:-}" ]; then
+  did_remote=0
+  do_tabs=0
+  require_stop=0
+  for arg; do
+    if [ $did_remote = 0 ]; then
+      case "$arg" in
+	--)
+	  require_stop=0
+	  [ $do_tabs = 0 ] && set -- "$@" --remote-silent || set -- "$@" --remote-tab-silent
+	  did_remote=true
+	  ;;
+	-p)
+	  do_tabs=true
+	  ;;
+	-*)
+	  set -- "$@" "$arg"
+	  require_stop=1
+	  ;;
+	*)
+	  if [ $require_stop != 0 ]; then
+	    set -- "$@" "$arg"
+	  else
+	    [ $do_tabs = 0 ] && set -- "$@" --remote-silent "$arg" || set -- "$@" --remote-tab-silent "$arg"
+	  fi
+	  did_remote=true
+	  ;;
+      esac
+    else
+      set -- "$@" "$arg"
+    fi
+    shift
+  done
+  exec "$VIM" --servername "$SERVERNAME" "$@"
+fi
+exec "$VIM" "$@"
+
+if [ -n "${DISPLAY:-}" ]; then
+  if [ $# -gt 3 ]; then
+    exec "$VIM" --servername "$SERVERNAME" --remote "$@"
+  elif [ $# -gt 0 ]; then
+    exec "$VIM" --servername "$SERVERNAME" --remote-tab "$@"
+  fi
+fi
+
+#vim:set ts=8 sts=2 sw=2:
+#vim600:fdm=marker fdl=1 fdc=0:
