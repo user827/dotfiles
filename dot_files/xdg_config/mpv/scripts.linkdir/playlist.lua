@@ -63,7 +63,7 @@ end
 
 options.read_options(o)
 cwd = mputils.getcwd()
-mp.add_key_binding("F1", "prev-dir", prev_dir)
-mp.add_key_binding("F2", "next-dir", next_dir)
+-- mp.add_key_binding("F1", "prev-dir", prev_dir)
+-- mp.add_key_binding("F2", "next-dir", next_dir)
 mp.add_key_binding("ctrl+1", "prev-dir", prev_dir)
 mp.add_key_binding("ctrl+2", "next-dir", next_dir)
