@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+uid=$(id -u)
+tmpdir=/tmp/$uid.screenshot
+mkdir -pm0700 "$tmpdir" || true
+tmpfile=$(mktemp --tmpdir="$tmpdir" XXXXXXXXXXXXXX.png) || true
+import png:- | tee "$tmpfile" | xclip -selection clipboard -t image/png
+echo "screenshot saved to $tmpfile"

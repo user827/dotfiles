@@ -624,6 +624,8 @@ globalkeys = awful.util.table.join(globalkeys,
     --use a keycode insterad of eg. `, so the binding works in all keyboard layouts
     awful.key({ modkey }, "#49", function ()
       quakeconsole[mouse.screen]:toggle() end),
+    awful.key({ }, "#107", function ()
+      awful.spawn({'screenshot'}, false) end),
     awful.key({ modkey }, "Escape", function ()
       quakeconsole[mouse.screen]:toggle() end)
     -- awful.key({ modkey, "Shift" }, "#49", function ()
