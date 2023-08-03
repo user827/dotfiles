@@ -2,15 +2,19 @@
 
 install_module() {
   local "confpath=$modbase/maildrop" uid admin hostname
+  if [ -f ~/.forward ] && [ -f "$L_GEN_DIR/home/mailfilter" ]; then
+    msg maildrop set
+    return 0
+  fi
   if [ -f ~/.skipmaildrop ]; then
-    echo skipping maildrop
+    warn skipping maildrop
     return 0
   fi
 
   printf "%s" "Skip setting maildrop? [y/N] "
   read -r ans
   if [ "$ans" = y ]; then
-    echo skipping
+    warn skipping
     touch ~/.skipmaildrop
     return 0
   fi

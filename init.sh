@@ -35,11 +35,11 @@ for f in "$L_GIT_ROOT"/dots/*; do Lln "$f" "$L_HOME/.${f##*/}"; done
 
 sh "$L_LIB_PATH"/dot_files.sh "$@" "$L_GIT_ROOT"/dot_files
 
-msg "Cleaning up previously generated files"
-for dir in bin home home_nodot xdg_config xdg_data; do
-  [ -d "$L_GEN_DIR"/"$dir" ] && rm -r --interactive=never -- "${L_GEN_DIR:?}"/"$dir"
-  mkdir -p "$L_GEN_DIR"/"$dir"
-done
+#msg "Cleaning up previously generated files"
+#for dir in bin home home_nodot xdg_config xdg_data; do
+#  [ -d "$L_GEN_DIR"/"$dir" ] && rm -r --interactive=never -- "${L_GEN_DIR:?}"/"$dir"
+#  mkdir -p "$L_GEN_DIR"/"$dir"
+#done
 
 
 msg "Installing modules"
