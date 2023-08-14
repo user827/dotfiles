@@ -3,6 +3,9 @@ set -eu
 uid=$(id -u)
 tmpdir=/tmp/$uid.screenshot
 mkdir -pm0700 "$tmpdir" || true
-tmpfile=$(mktemp --tmpdir="$tmpdir" XXXXXXXXXXXXXX.png) || true
+d=$(date +%F)
+count=$(find "$tmpdir" -maxdepth 1 -type f -name '*.png' -printf x | wc -c)
+count=$((count + 1))
+tmpfile=$(mktemp --tmpdir="$tmpdir" "${d}-${count}-XXXXXXXXXXXXXX.png") || true
 import png:- | tee "$tmpfile" | xclip -selection clipboard -t image/png
 echo "screenshot saved to $tmpfile"
