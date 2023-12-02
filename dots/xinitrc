@@ -28,19 +28,7 @@ cleanup() {
   fi
 }
 
-keepsession=$XDG_RUNTIME_DIR/keepsession-$XDG_SESSION_ID
-keepxrunning=$XDG_RUNTIME_DIR/keepxrunning-$XDG_SESSION_ID
-touch "$keepsession" "$keepxrunning"
-
 trap cleanup 0
-
-printf %s "XAUTHORITY=$XAUTHORITY
-XDG_SESSION_ID=$XDG_SESSION_ID
-" > "${XDG_RUNTIME_DIR}/startx_environ-$DISPLAY"
-
-set -a
-. "${XDG_RUNTIME_DIR}/startx_environ-$DISPLAY"
-set +a
 
 xrdb -merge ~/.Xresources
 setxkbmap -layout "us,fi"
@@ -52,25 +40,12 @@ tmux -L "awesome_${DISPLAY}" new-session -s keepalive -d || true
 #systemctl --user start "tmux@${DISPLAY}.service"
 
 [ -f ~/.xinitrc.local ] && . ~/.xinitrc.local
+# No restart handling but these need to be in systemd session and processes
+# started by systemd --user are not.
+# Also it should be that session services are in hidepid group
+nj xss-lock -n /usr/lib/xsecurelock/dimmer -l -- /usr/bin/sh mylock &
+awesome --no-argb
 
 # for subshells too
-trap '' TERM INT HUP
-
-exec 3< "$keepsession"
-flock 3
-sudo systemctl start "mytrans$USER@$XDG_SESSION_ID.service"
-
-systemctl --user start --wait "xserverdummy@${DISPLAY}.service" &
-pid1=$!
-
-flock "$keepxrunning" true &
-pid2=$!
-
-wait -n "$pid1" "$pid2"
-
-
-systemctl --user stop "xserverdummy@${DISPLAY}.service"
-
-flock -u 3
-wait -n "$pid1" "$pid2"
-rm -f "$keepsession" "$keepxrunning"
+#trap '' TERM INT HUP
+#wait

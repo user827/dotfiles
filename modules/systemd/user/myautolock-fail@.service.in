@@ -1,7 +1,0 @@
-[Unit]
-Description=My autolock failed at %I
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/sh @startups@/myautolock-fail.sh %i
-StartLimitInterval=0

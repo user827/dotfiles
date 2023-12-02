@@ -1,9 +1,0 @@
-[Unit]
-Description=Ibus at %I
-
-[Service]
-Type=forking
-ExecStart=/usr/bin/ibus-daemon -rxdn session-%I
-Restart=always
-RestartSec=1s
-ExecStop=/usr/bin/ibus exit
