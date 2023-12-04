@@ -7,8 +7,8 @@ else
   exec systemd-cat -p err -t myx@vt"$XDG_VTNR" --level-prefix=yes sh "$0" --logged "$@" || ret=$?
 fi
 
-. /usr/lib/myshlib/logs3.sh
-. /usr/lib/myshlib/utils.sh
+. /usr/lib/shlib/logs3.sh
+. /usr/lib/shlib/utils.sh
 
 cleanfun() {
   local ret=$?

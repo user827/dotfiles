@@ -1,8 +1,8 @@
 #!/bin/sh
 set -eum
 
-. /usr/lib/myshlib/logs3.sh
-. /usr/lib/myshlib/utils.sh
+. /usr/lib/shlib/logs3.sh
+. /usr/lib/shlib/utils.sh
 
 # Automatically determine an unused $DISPLAY
 d=0

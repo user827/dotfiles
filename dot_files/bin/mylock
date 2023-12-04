@@ -1,8 +1,8 @@
 #!/bin/bash
 set -eu
 
-. /usr/lib/myshlib/utils.sh
-. /usr/lib/myshlib/logs2.sh
+. /usr/lib/shlib/utils.sh
+. /usr/lib/shlib/logs2.sh
 
 #saver=saver_mpv_play
 saver=saver_display

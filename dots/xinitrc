@@ -6,8 +6,8 @@ set -eu
 #set -x
 
 
-. /usr/lib/myshlib/logs3.sh
-. /usr/lib/myshlib/utils.sh
+. /usr/lib/shlib/logs3.sh
+. /usr/lib/shlib/utils.sh
 
 set +eu
 # start some nice programs
