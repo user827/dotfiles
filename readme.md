@@ -1,4 +1,16 @@
-# installation
+All my home configuration.
+
+# Dependencies
+
+In arch linux, ensure all dependencies are installed by
+```
+cd pacman/myhome
+makepkg --syncdeps --install
+cd ../myhomex
+makepkg --syncdeps --install
+```
+
+# Installation
 ```
 git pull --verify-signatures
 ./install.sh

@@ -1,32 +1,26 @@
 # Maintainer: me
 
-pkgname=myhome
-pkgver=0.3.1
+pkgname=myhomex
+pkgver=0.4
 pkgrel=1
+pkgdesc='My GUI utils'
+url="https://github.com/user827/dotfiles.git"
 arch=('any')
+license=('Apache')
 depends=(
-compton
-
-firefox
-otf-ipafont
-ttf-ubuntu-font-family
-#gnu-free-fonts
-#tf-unifont
-
-sound-theme-freedesktop
-libnotify
-
-rxvt-unicode
-
-xsecurelock
-
-ibus
-ibus-anthy
-
-awesome
-
-xdotool
-
-xorg-xinit
+    alacritty
+    awesome
+    firefox
+    libnotify
+    mpv
+    noto-fonts noto-fonts-emoji otf-ipafont ttf-sourcecodepro-nerd
+    nsxiv
+    pulseaudio pulseaudio-alsa
+    sound-theme-freedesktop
+    xdotool
+    xorg-xinit
+    xss-lock xsecurelock
+    yt-dlp
+    zathura-djvu zathura-pdf-mupdf
 )
-optdepends=('gvim' 'chromium')
+optdepends=('chromium')

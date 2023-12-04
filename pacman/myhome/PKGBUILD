@@ -1,32 +1,24 @@
 # Maintainer: me
 
 pkgname=myhome
-pkgver=0.3
+pkgver=0.4
 pkgrel=1
+pkgdesc='My cli utils'
+url="https://github.com/user827/dotfiles.git"
 arch=('any')
+license=('Apache')
 depends=(
-bash
-zsh
-systemd
-coreutils
-
-git
-unzip
-wget
-
-tmux
-byobu
-
-youtube-dl
-xorg-xinit
-
-remind
-
-pulseaudio
-pulseaudio-alsa
-
-mutt
-
-schedtool
+    bat
+    byobu
+    fd
+    fzf
+    git
+    mutt
+    neovim python-pynvim
+    remind
+    ripgrep
+    tmux
+    unzip
+    wget
+    zsh
 )
-optdepends=('vim')
