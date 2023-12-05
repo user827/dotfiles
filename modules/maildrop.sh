@@ -6,21 +6,13 @@ install_module() {
     msg maildrop set
     return 0
   fi
-  if [ -f ~/.skipmaildrop ]; then
-    warn skipping maildrop
-    return 0
-  fi
 
-  printf "%s" "Skip setting maildrop? [y/N] "
-  read -r ans
-  if [ "$ans" = y ]; then
+  if [ "${skip_maildrop:-}" == 1 ]; then
     warn skipping
-    touch ~/.skipmaildrop
     return 0
   fi
 
-  printf "%s" "Enter admin user "
-  read -r admin
+  local admin="$mail_admin_user"
 
   hostname=$(hostname)
   prepare_gen "$confpath/mailfilter" "$L_GEN_DIR/home/mailfilter" 600 \

@@ -2,6 +2,7 @@
 set -eu
 
 cd "$(dirname "$0")"
+. ./options
 export L_GIT_ROOT="$PWD"
 export L_LIB_PATH="$L_GIT_ROOT"/lib
 
@@ -27,7 +28,7 @@ log notice "(Re)Initializing $(basename "$PWD") with:"
 msg "HOME=$L_HOME"
 msg "XDG_CONFIG_DIR=$L_XDG_CONFIG"
 msg "XDG_DATA_DIR=$L_XDG_DATA"
-read -rp"press key to continue" ans
+[ -n "${BATCH:-}" ] || read -rp"press key to continue" ans
 
 msg "Linking dots"
 for f in "$L_GIT_ROOT"/dots/*; do Lln "$f" "$L_HOME/.${f##*/}"; done

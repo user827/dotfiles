@@ -17,7 +17,7 @@ get_installpath() {
       installpath=$L_XDG_CONFIG/${conffile#"$myroot/xdg_config/"}
       if ! [ -d "$L_XDG_CONFIG" ]; then
         echo "creating $L_XDG_CONFIG, press key to continue"
-	read -r ans
+        [ -n "${BATCH:-}" ] || read -r ans
         mkdir -p -- "$L_XDG_CONFIG"
       fi
       ;;
@@ -28,7 +28,7 @@ get_installpath() {
       installpath=$L_XDG_DATA/${conffile#"$myroot/xdg_data/"}
       if ! [ -d "$L_XDG_DATA" ]; then
         echo creating "$L_XDG_DATA, press key to continue"
-	read -r ans
+        [ -n "${BATCH:-}" ] || read -r ans
         mkdir -p -- "$L_XDG_DATA"
       fi
       ;;
@@ -76,7 +76,7 @@ do
     if [ -d "$conffile" ] && [ ! -h "$conffile" ] && [ "$islinkdir" = 0 ]; then
       if [ -h "$installpath" ]; then
 	echo -n "Remove link: $installpath? [y/N]: "
-	read -r ans <&3
+        [ -n "${BATCH:-}" ] || read -r ans <&3
 	[ "$ans" != y ] && echo skipping "$installpath" && continue
 	rm "$installpath"
       fi

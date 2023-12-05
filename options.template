@@ -1,0 +1,4 @@
+#skip_maildrop=0
+mail_admin_user=root
+
+# vim: set filetype=vim
