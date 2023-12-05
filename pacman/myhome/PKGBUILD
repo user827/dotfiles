@@ -13,6 +13,7 @@ depends=(
     fd
     fzf
     git
+    inetutils
     mutt
     neovim python-pynvim
     remind
