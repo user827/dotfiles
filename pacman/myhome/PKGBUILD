@@ -1,7 +1,7 @@
 # Maintainer: me
 
 pkgname=myhome
-pkgver=0.4
+pkgver=0.4.1
 pkgrel=1
 pkgdesc='My cli utils'
 url="https://github.com/user827/dotfiles.git"
@@ -23,3 +23,15 @@ depends=(
     wget
     zsh
 )
+install=$pkgname.install
+
+package() {
+  mkdir -p "$pkgdir"/etc/systemd/logind.conf.d/
+  cat > "$pkgdir"/etc/systemd/logind.conf.d/myhome.conf <<EOF
+[Login]
+# Because we want tmux server to be in the current session
+KillUserProcesses=yes
+EOF
+}
+
+# vim: filetype=PKGBUILD

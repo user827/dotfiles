@@ -1,0 +1,12 @@
+post_install() {
+  echo "reloading logind"
+  systemctl reload systemd-logind.service
+}
+
+post_upgrade() {
+  post_install "$1"
+}
+
+post_remove() {
+  :
+}
