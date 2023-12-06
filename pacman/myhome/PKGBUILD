@@ -14,6 +14,7 @@ depends=(
     fzf
     git
     inetutils
+    less
     mutt
     neovim python-pynvim
     remind
