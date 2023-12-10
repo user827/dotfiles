@@ -18,7 +18,7 @@ depends=(
     pulseaudio pulseaudio-alsa
     sound-theme-freedesktop
     xdotool
-    xorg-xinit
+    xorg-server xorg-xinit
     xss-lock xsecurelock
     yt-dlp
     zathura-djvu zathura-pdf-mupdf
