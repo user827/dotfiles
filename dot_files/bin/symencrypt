@@ -6,8 +6,8 @@ if [ "$1" = -r ]; then
   out=$1.tar.zst.gpg
   tar --zstd -c "$1" | gpg --sign --symmetric -o "$out"
 else
-  out=$1.gpg
-  gzip -c "$1" | gpg --sign --symmetric -o "$out"
+  out=$1.zst.gpg
+  zstd -c "$1" | gpg --sign --symmetric -o "$out"
 fi
 
 echo "Encrypted into $out"
