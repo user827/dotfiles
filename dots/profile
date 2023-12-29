@@ -8,4 +8,8 @@ _profile_source() {
 }
 _profile_source
 
+if [ -z "${SSH_AUTH_SOCK:-}" ]; then
+    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+fi
+
 [ ! -f "$HOME/.profile.local" ] || source "$HOME/.profile.local"

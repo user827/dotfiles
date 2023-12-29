@@ -1,10 +1,7 @@
 Host *
-  #SendEnv LANG LC_*
-  HashKnownHosts yes
-  #Port 4430
   VisualHostKey yes
 
-  #WARNING insecure?
+  #insecure?
   ControlMaster=auto
   ControlPath=~/.ssh/%r@%h:%p
 
