@@ -449,6 +449,14 @@ if type batman > /dev/null; then
   compdef _man batman
 fi
 
+# https://unix.stackexchange.com/questions/496379/treat-command-like-another-for-completion-purposes
+compdefas () {
+  if (($+_comps[$1])); then
+    compdef $_comps[$1] ${^@[2,-1]}=$1
+  fi
+}
+compdefas pacman pacmatic
+
 # better than rm -f for removing write protected files: tells when target does not
 # exist
 # unsafe!
