@@ -1,0 +1,9 @@
+import = ["/home/tina/.config/alacritty/colors.toml"]
+
+[shell]
+args = ["--login"]
+program = "/bin/zsh"
+
+[window.dimensions]
+columns = 135
+lines = 38
