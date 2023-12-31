@@ -10,7 +10,8 @@ license=('Apache')
 depends=(
     alacritty
     awesome
-    gnome rtkit pipewire-audio pipewire-pulse pipewire-alsa
+    gnome pipewire-audio pipewire-pulse pipewire-alsa
+    wayland xorg-xwayland gnome-ssh-askpass4-git
     firefox
     libnotify
     mpv
