@@ -12,8 +12,8 @@ if (/^From:\s+.* <|admin|@|hostname|\.localdomain>$/)
     #subject=escape($MATCH1)
     #type=escape($MATCH2)
     #`DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/@uid@/bus notify-send -u critical -t 10000 -- "$subject" "$type"`
-    summary=escape($MATCH1)
-    body=escape($MATCH2)
+    summary=escape($MATCH2)
+    body='See journal for details'
     `@user_binaries@/mailfilterdbus -u critical -t 10000`
   }
   else
