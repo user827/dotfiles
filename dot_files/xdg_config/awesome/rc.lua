@@ -92,7 +92,7 @@ end
 -- This is used later as the default terminal and editor to run.
 local terminal = "alacritty"
 local display = os.getenv("DISPLAY")
-local terminal_args_quake = {'-o', 'no-live-config-reload=false', '-e', 'tmux',  '-L', 'awesome_' .. display, 'new-session', '-s', 'awe', '-A'}
+local terminal_args_quake = {'-e', 'tmux',  '-L', 'awesome_' .. display, 'new-session', '-s', 'awe', '-A'}
 local editor = os.getenv("EDITOR") or "nano"
 local editor_cmd = terminal .. " -e " .. editor
 
