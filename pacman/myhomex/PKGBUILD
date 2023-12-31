@@ -11,6 +11,7 @@ depends=(
     alacritty
     awesome
     gnome pipewire-audio pipewire-pulse pipewire-alsa
+    gnome-shell-extension-appindicator
     wayland xorg-xwayland gnome-ssh-askpass4-git
     firefox
     libnotify
