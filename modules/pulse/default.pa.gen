@@ -1,4 +1,0 @@
-.include /etc/pulse/default.pa
-
-.nofail
-.include SED_THIS_DIR/local.pa

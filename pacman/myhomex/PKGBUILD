@@ -10,12 +10,12 @@ license=('Apache')
 depends=(
     alacritty
     awesome
+    gnome rtkit pipewire-audio pipewire-pulse pipewire-alsa
     firefox
     libnotify
     mpv
     noto-fonts noto-fonts-emoji otf-ipafont ttf-sourcecodepro-nerd
     nsxiv
-    pulseaudio pulseaudio-alsa
     sound-theme-freedesktop
     xdotool
     xorg-server xorg-xinit
