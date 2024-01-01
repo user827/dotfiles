@@ -26,18 +26,16 @@ while [ -e "$out" ]; do
   fi
 done
 
-btime_=$(grep btime /proc/stat | awk '{print $2}')
-read -r utime_ _ < /proc/uptime
-btime_utime_=$(echo "${btime_?} + ${utime_?}" | bc -l)
-ffmpeg -xerror -copyts \
+#btime_=$(grep btime /proc/stat | awk '{print $2}')
+#read -r utime_ _ < /proc/uptime
+#btime_utime_=$(echo "${btime_?} + ${utime_?}" | bc -l)
+ffmpeg -xerror \
   -f v4l2 -thread_queue_size 1024 -framerate 30 -input_format mjpeg -video_size 1920x1080 -i /dev/video0 \
   -f pulse -thread_queue_size 1024 -i default \
+  -force_key_frames 00:00:00.000 \
   -pix_fmt yuv420p -c:v libx264 -preset superfast \
   -ac 2 -b:a 190k -c:a libopus \
-  -af "asetpts=PTS-${btime_utime_?}/TB" \
-  -vf "setpts=PTS-${utime_?}/TB" \
-  "$out" \
-  -pix_fmt yuv420p -f sdl2 -window_enable_quit 0 -window_size 1280x720 "Webcam"
+  "$out"
   # mpv --cache=no --no-input-default-bindings --no-input-terminal --keep-open=no -
   #ffplay -probesize 32 -sync ext -
   # 640x360
