@@ -24,4 +24,4 @@ for archive; do
   fi
 done
 
-sxiv -pr "$root"
+nsxiv -pr "$root"
