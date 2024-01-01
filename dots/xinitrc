@@ -33,6 +33,9 @@ trap cleanup 0
 xrdb -merge ~/.Xresources
 setxkbmap -layout "us,fi"
 
+export SUDO_ASKPASS=/usr/bin/xaskpass
+export SSH_ASKPASS=/usr/bin/xaskpass
+
 nj tmux -L "awesome_${DISPLAY}" new-session -s awe -d || true
 tmux -L "awesome_${DISPLAY}" new-session -s keepalive -d || true
 # need awesome in session in order to let systemd kill all its children so x dies
