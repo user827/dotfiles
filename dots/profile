@@ -12,4 +12,9 @@ if [ -z "${SSH_AUTH_SOCK:-}" ]; then
     export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 fi
 
+if [ "${XDG_SESSION_TYPE:-}" = wayland ] && [ -x /usr/lib/ssh/gnome-ssh-askpass4 ]; then
+  export SUDO_ASKPASS=/usr/lib/ssh/gnome-ssh-askpass4
+  export SSH_ASKPASS=/usr/lib/ssh/gnome-ssh-askpass4
+fi
+
 [ ! -f "$HOME/.profile.local" ] || source "$HOME/.profile.local"
