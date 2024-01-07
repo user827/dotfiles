@@ -9,9 +9,22 @@ case "$(tty)" in
     ;;
 esac
 
-if [[ -n "$DISPLAY" ]]; then
+if [[ -n "$DISPLAY" ]] || [[ $XDG_SESSION_TYPE = wayland ]]; then
   alias sudo="sudo -A"
 fi
+
+if [ "${XDG_SESSION_TYPE:-}" = wayland ] && [ -x /usr/lib/ssh/gnome-ssh-askpass4 ]; then
+  export SUDO_ASKPASS=/usr/lib/ssh/gnome-ssh-askpass4
+  export SSH_ASKPASS=/usr/lib/ssh/gnome-ssh-askpass4
+fi
+
+if [[ $TERM == *-256color ]] && [[ -z $TMUX ]] && [[ -z $SCREEN ]]; then
+  eval $(dircolors -b)
+
+  echo "Setting solarized dark base16 256colors"
+  source ${ZDOTDIR:-${HOME}}/data/base16-shell/scripts/base16-solarized-dark.sh
+fi
+
 
 # Setopts {{{{
 
