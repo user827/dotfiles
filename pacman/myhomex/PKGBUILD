@@ -13,6 +13,7 @@ depends=(
     gnome-shell gdm gnome-shell-extension-appindicator
     pipewire-audio pipewire-pulse pipewire-alsa
     wayland xorg-xwayland gnome-ssh-askpass4-git
+    wl-clipboard
     firefox
     libnotify
     mpv
