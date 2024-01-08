@@ -1,7 +1,7 @@
 # Maintainer: me
 
 pkgname=myhome
-pkgver=0.4.1
+pkgver=0.4.2
 pkgrel=2
 pkgdesc='My cli utils'
 url="https://github.com/user827/dotfiles.git"
@@ -23,9 +23,6 @@ depends=(
     unzip
     wget
     zsh
-)
-optdepends=(
-    courier-maildrop
 )
 install=$pkgname.install
 

@@ -1,4 +1,5 @@
-#skip_maildrop=0
+#skip_mailforward=0
 mail_admin_user=root
+#mail_listeners="user1 user2"
 
 # vim: set filetype=vim

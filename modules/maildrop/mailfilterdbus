@@ -1,7 +1,0 @@
-#!/bin/sh
-set -eu
-if [ -n "${body:-}" ]; then
-  DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/@uid@/bus notify-send "$@" -- "$summary" "$body"
-else
-  DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/@uid@/bus notify-send "$@" -- "$summary"
-fi

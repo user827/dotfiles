@@ -1,0 +1,1 @@
+"|systemd-cat -t forward@${USER} @home@/.local/bin/notify_email_subject.sh @admin@"
