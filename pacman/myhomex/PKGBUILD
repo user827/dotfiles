@@ -1,7 +1,7 @@
 # Maintainer: me
 
 pkgname=myhomex
-pkgver=0.4
+pkgver=0.5
 pkgrel=1
 pkgdesc='My GUI utils'
 url="https://github.com/user827/dotfiles.git"
@@ -13,7 +13,7 @@ depends=(
     gnome-shell gdm gnome-shell-extension-appindicator
     pipewire-audio pipewire-pulse pipewire-alsa
     wayland xorg-xwayland gnome-ssh-askpass4-git
-    wl-clipboard
+    wl-clipboard fwupd
     firefox
     libnotify
     mpv
