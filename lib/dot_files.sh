@@ -71,7 +71,7 @@ do
     islinkdir=0
     case "$conffile" in *.linkdir) islinkdir=1 ;; esac
 
-    get_installpath "$conffile"
+    get_installpath "$conffile" <&3
 
     if [ -d "$conffile" ] && [ ! -h "$conffile" ] && [ "$islinkdir" = 0 ]; then
       if [ -h "$installpath" ]; then
