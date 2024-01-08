@@ -1,6 +1,6 @@
 #!/bin/sh
-set -eux
-exec 2>&1
+set -eu
+#exec 2>&1
 trap 'err=$?; if [ $err -gt 0 ]; then echo error $err; fi' 0
 
 admin_user=$1
