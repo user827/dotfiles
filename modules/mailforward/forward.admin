@@ -1,1 +1,1 @@
-"|systemd-cat -t forward@${USER} @home@/.local/bin/admin_notify.sh @mail_listeners@"
+"|systemd-cat -t forward@${USER} @home@/.local/bin/admin_notify.sh @mail_listeners@", @user@

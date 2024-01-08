@@ -12,10 +12,12 @@ install_module() {
   if [ "$USER" = "$admin" ]; then
     prepare_gen "$confpath/forward.admin" "$L_HOME/.forward" 644 \
       -e "s,@home@,$HOME,g" \
+      -e "s,@user@,$USER,g" \
       -e "s,@mail_listeners@,$mail_listeners,g"
   else
     prepare_gen "$confpath/forward" "$L_HOME/.forward" 644 \
       -e "s,@home@,$HOME,g" \
+      -e "s,@user@,$USER,g" \
       -e "s,@admin@,$admin,g"
   fi
 }
