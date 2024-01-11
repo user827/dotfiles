@@ -1,4 +1,4 @@
-import = ["/home/tina/.config/alacritty/colors.toml"]
+import = ["~/.config/alacritty/colors.toml"]
 
 [shell]
 args = ["--login"]
