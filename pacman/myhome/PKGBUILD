@@ -16,13 +16,15 @@ depends=(
     inetutils
     less
     mutt
-    neovim python-pynvim
     remind
     ripgrep
     tmux
     unzip
     wget
     zsh
+
+    neovim python-pynvim
+    shellcheck bash-language-server
 )
 install=$pkgname.install
 
