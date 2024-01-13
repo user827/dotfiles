@@ -27,7 +27,7 @@ fi
 
 uid=$(id -u)
 if [ -n "${body:-}" ]; then
-  DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus notify-send "$@" -- "$summary" "$body" || true
+  DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus notify-send -a "System watch" "$@" -- "$summary" "$body" || true
 else
-  DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus notify-send "$@" -- "$summary" || true
+  DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus notify-send -a "System watch" "$@" -- "$summary" || true
 fi
