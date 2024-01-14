@@ -14,6 +14,7 @@ makepkg --syncdeps --install
 
 Setup `options` first. Then
 ```
+gpg --search-keys user827
 git pull --verify-signatures
 ./install.sh
 ./init.sh
@@ -21,5 +22,8 @@ git pull --verify-signatures
 
 - For unattended installation, export `BATCH` with a value.
 
-- for gnome terminal, set the terminal to start a login shell
 - zsh is used as the default shell
+
+# Update
+
+Run `updatedots`.
