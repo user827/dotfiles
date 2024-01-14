@@ -13,8 +13,14 @@ makepkg --syncdeps --install
 # Installation
 
 Setup `options` first. Then
+
 ```
 gpg --search-keys user827
+```
+
+The trust and sign the key or just trust it ultimately. Afterwards:
+
+```
 git pull --verify-signatures
 ./install.sh
 ./init.sh
