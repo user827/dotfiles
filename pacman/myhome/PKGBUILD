@@ -25,6 +25,7 @@ depends=(
 
     neovim python-pynvim
     shellcheck bash-language-server
+    vim-language-server
 )
 install=$pkgname.install
 
