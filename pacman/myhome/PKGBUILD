@@ -15,6 +15,7 @@ depends=(
     git
     inetutils
     less
+    man
     mutt
     remind
     ripgrep
