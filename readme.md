@@ -33,3 +33,9 @@ git pull --verify-signatures
 # Update
 
 Run `updatedots`.
+
+# Manual setup
+
+```
+gnome-extensions enable appindicatorsupport@rgcjonas.gmail.com
+```
