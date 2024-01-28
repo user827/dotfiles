@@ -18,6 +18,15 @@ if [ "${XDG_SESSION_TYPE:-}" = wayland ] && [ -x /usr/lib/ssh/gnome-ssh-askpass4
   export SSH_ASKPASS=/usr/lib/ssh/gnome-ssh-askpass4
 fi
 
+if [ -n "${SSH_CONNECTION:-}" ]; then
+  if [ -x /usr/lib/ssh/x11-ssh-askpass ]; then
+    export SUDO_ASKPASS=/usr/lib/ssh/x11-ssh-askpass
+    export SSH_ASKPASS=/usr/lib/ssh/x11-ssh-askpass
+  else
+    unalias sudo
+  fi
+fi
+
 if [[ $TERM == *-256color ]] && [[ -z $TMUX ]] && [[ -z $SCREEN ]]; then
   eval $(dircolors -b)
 
