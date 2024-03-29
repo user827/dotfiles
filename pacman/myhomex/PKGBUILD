@@ -25,5 +25,6 @@ depends=(
     xss-lock xsecurelock
     yt-dlp
     zathura-djvu zathura-pdf-mupdf
+    voikko-libreoffice
 )
 optdepends=('chromium')

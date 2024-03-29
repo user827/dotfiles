@@ -27,6 +27,9 @@ depends=(
     neovim python-pynvim
     shellcheck bash-language-server
     vim-language-server
+
+    libvoikko
+    voikko-fi
 )
 install=$pkgname.install
 
