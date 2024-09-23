@@ -28,7 +28,7 @@ git pull --verify-signatures
 
 - For unattended installation, export `BATCH` with a value.
 
-- zsh is used as the default shell
+- zsh is used as the default shell. Use `chsh -s $(which zsh)` to change it.
 
 # Update
 

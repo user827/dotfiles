@@ -5,6 +5,7 @@ $pdf_update_method = 0;
 
 $sleep_time = 1;
 
+# https://tex.stackexchange.com/questions/1226/how-to-make-latexmk-use-makeglossaries
 add_cus_dep('glo', 'gls', 0, 'run_makeglossaries');
 add_cus_dep('acn', 'acr', 0, 'run_makeglossaries');
 
