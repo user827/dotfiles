@@ -15,10 +15,10 @@ makepkg --syncdeps --install
 Setup `options` first. Then
 
 ```
-gpg --search-keys user827
+gpg --receive-keys 0x8DFE60B7327D52D6
 ```
 
-The trust and sign the key or just trust it ultimately. Afterwards:
+Then trust and sign the key or just trust it ultimately. Afterwards:
 
 ```
 git pull --verify-signatures
