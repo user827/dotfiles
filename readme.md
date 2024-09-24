@@ -1,4 +1,4 @@
-All my home configuration.
+All my home configurations.
 
 # Dependencies
 
