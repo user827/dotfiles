@@ -36,6 +36,9 @@ Run `updatedots`.
 
 # Manual setup
 
+- Set nerd console fonts
+
+- Enable tray icons:
 ```
 gnome-extensions enable appindicatorsupport@rgcjonas.gmail.com
 ```
