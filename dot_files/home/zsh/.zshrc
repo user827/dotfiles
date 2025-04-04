@@ -9,15 +9,6 @@ case "$(tty)" in
     ;;
 esac
 
-if [[ -n "$DISPLAY" ]] || [[ $XDG_SESSION_TYPE = wayland ]]; then
-  alias sudo="sudo -A"
-fi
-
-#if [ "${XDG_SESSION_TYPE:-}" = wayland ] && [ -x /usr/lib/ssh/gnome-ssh-askpass4 ]; then
-#  export SUDO_ASKPASS=/usr/lib/ssh/gnome-ssh-askpass4
-#  export SSH_ASKPASS=/usr/lib/ssh/gnome-ssh-askpass4
-#fi
-
 if [ -n "${SSH_CONNECTION:-}" ]; then
   if [ -x /usr/lib/ssh/x11-ssh-askpass ]; then
     export SUDO_ASKPASS=/usr/lib/ssh/x11-ssh-askpass
