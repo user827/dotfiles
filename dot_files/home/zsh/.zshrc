@@ -13,8 +13,6 @@ if [ -n "${SSH_CONNECTION:-}" ]; then
   if [ -x /usr/lib/ssh/x11-ssh-askpass ]; then
     export SUDO_ASKPASS=/usr/lib/ssh/x11-ssh-askpass
     export SSH_ASKPASS=/usr/lib/ssh/x11-ssh-askpass
-  else
-    unalias sudo
   fi
 fi
 
