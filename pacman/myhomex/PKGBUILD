@@ -1,7 +1,7 @@
 # Maintainer: me
 
 pkgname=myhomex
-pkgver=0.5
+pkgver=0.6
 pkgrel=1
 pkgdesc='My GUI utils'
 url="https://github.com/user827/dotfiles.git"
@@ -9,7 +9,6 @@ arch=('any')
 license=('Apache')
 depends=(
     alacritty
-    awesome
     gnome-shell gdm gnome-shell-extension-appindicator
     pipewire-audio pipewire-pulse pipewire-alsa
     wayland xorg-xwayland gnome-ssh-askpass4-git
@@ -20,11 +19,14 @@ depends=(
     noto-fonts noto-fonts-emoji otf-ipafont ttf-sourcecodepro-nerd
     nsxiv
     sound-theme-freedesktop
-    xdotool
-    xorg-server xorg-xinit
-    xss-lock xsecurelock
     yt-dlp
     zathura-djvu zathura-pdf-mupdf
     voikko-libreoffice
 )
-optdepends=('chromium')
+optdepends=(
+  'chromium'
+  awesome
+  xdotool
+  xorg-server xorg-xinit
+  xss-lock xsecurelock
+)
