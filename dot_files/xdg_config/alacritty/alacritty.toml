@@ -1,9 +1,11 @@
-import = ["~/.config/alacritty/colors.toml"]
+general.import = ["~/.config/alacritty/colors.toml"]
 
-[shell]
+[terminal.shell]
 args = ["--login"]
 program = "/bin/zsh"
 
 [window.dimensions]
 columns = 135
 lines = 38
+
+[terminal]
