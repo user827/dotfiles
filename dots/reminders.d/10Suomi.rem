@@ -120,8 +120,8 @@ REM Dec 28 CAL Viatt. lasten p.
 #REM Sun 1 Apr --7 MSG Kesäaika alkaa.
 #REM Sun 1 Nov --7 MSG Kesäaika päättyy.
 #MYMOD
-REM Sun Jun 1 -7 +[my_warn] AT 3.00 %"Kesäaika alkaa.%" %b on %a %2
-REM Sun Nov 1 -7 +[my_warn] At 4.00 %"Kesäaika päättyy.%" %b on %a %2
+REM Sun Jun 1 -7 +[my_warn] AT 3.00 MSG %"Kesäaika alkaa.%" %b on %a %2
+REM Sun Nov 1 -7 +[my_warn] At 4.00 MSG %"Kesäaika päättyy.%" %b on %a %2
 
 # Kuun vaiheet
 REM [trigger(moondate(0))] SPECIAL MOON 0
