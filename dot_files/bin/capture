@@ -26,28 +26,34 @@ while [ -e "$out" ]; do
   fi
 done
 
+ffmpeg -xerror \
+  -f v4l2 -framerate 30 -input_format yuyv422 -video_size 640x480 -i /dev/video0 \
+  -pix_fmt yuv420p -c:v libx264 -preset superfast \
+  "$out" \
+  -f nut -c:v rawvideo - | ffplay -loglevel warning -vf setpts=0 -
+
+# List available formats
 # ffplay -f video4linux2 -list_formats all /dev/video0
 # https://ffmpeg.org/ffmpeg-devices.html#video4linux2_002c-v4l2
 
-#btime_=$(grep btime /proc/stat | awk '{print $2}')
-#read -r utime_ _ < /proc/uptime
-#btime_utime_=$(echo "${btime_?} + ${utime_?}" | bc -l)
+# For sync
+# btime_=$(grep btime /proc/stat | awk '{print $2}')
+# read -r utime_ _ < /proc/uptime
+# btime_utime_=$(echo "${btime_?} + ${utime_?}" | bc -l)
 
 # For another cam
   #-f pulse -thread_queue_size 1024 -i default \
   #-ac 2 -b:a 190k -c:a libopus \
   #-f v4l2 -thread_queue_size 1024 -framerate 30 -input_format mjpeg -video_size 1920x1080 -i /dev/video0 \
-ffmpeg -xerror \
-  -f v4l2 -thread_queue_size 1024 -framerate 30 -input_format yuyv422 -video_size 640x480 -i /dev/video0 \
-  -pix_fmt yuv420p -c:v libx264 -preset superfast \
-  "$out" \
-  -f nut -c:v rawvideo - | ffplay -loglevel warning -vf setpts=0 -
-  # mpv --cache=no --no-input-default-bindings --no-input-terminal --keep-open=no -
-  #ffplay -probesize 32 -sync ext -
-  # 640x360
 
-# deprecated
+
+# Other ways to preview
+  # | mpv --cache=no --no-input-default-bindings --no-input-terminal --keep-open=no -
+  # | ffplay -probesize 32 -sync ext -
+
+# Deprecated
 # -pix_fmt yuv420p -f sdl2 -window_enable_quit 0 -window_size 1280x720 "Webcam" \
+
 # https://video.stackexchange.com/questions/10368/video-capture-using-ffmpeg-v4l2-indev-results-in-bad-a-v-sync
 # https://superuser.com/questions/1584945/ffmpeg-audio-start-time-way-off
 # https://stackoverflow.com/questions/16658873/how-to-minimize-the-delay-in-a-live-streaming-with-ffmpeg
