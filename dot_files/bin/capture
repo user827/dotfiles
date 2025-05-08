@@ -32,8 +32,11 @@ done
 #btime_=$(grep btime /proc/stat | awk '{print $2}')
 #read -r utime_ _ < /proc/uptime
 #btime_utime_=$(echo "${btime_?} + ${utime_?}" | bc -l)
+
+# For another cam
   #-f pulse -thread_queue_size 1024 -i default \
   #-ac 2 -b:a 190k -c:a libopus \
+  #-f v4l2 -thread_queue_size 1024 -framerate 30 -input_format mjpeg -video_size 1920x1080 -i /dev/video0 \
 ffmpeg -xerror \
   -f v4l2 -thread_queue_size 1024 -framerate 30 -input_format yuyv422 -video_size 640x480 -i /dev/video0 \
   -pix_fmt yuv420p -c:v libx264 -preset superfast \
