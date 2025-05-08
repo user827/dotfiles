@@ -42,9 +42,9 @@ ffmpeg -xerror \
 # btime_utime_=$(echo "${btime_?} + ${utime_?}" | bc -l)
 
 # For another cam
+  #-f v4l2 -thread_queue_size 1024 -framerate 30 -input_format mjpeg -video_size 1920x1080 -i /dev/video0 \
   #-f pulse -thread_queue_size 1024 -i default \
   #-ac 2 -b:a 190k -c:a libopus \
-  #-f v4l2 -thread_queue_size 1024 -framerate 30 -input_format mjpeg -video_size 1920x1080 -i /dev/video0 \
 
 
 # Other ways to preview
