@@ -5,4 +5,4 @@ set -eu
 
 # https://trac.ffmpeg.org/wiki/Hardware/VAAPI
 #ffmpeg -f pulse -ac 2 -i default -device /dev/dri/card1 -f kmsgrab -i - -vf 'hwmap=derive_device=vaapi,crop=x=0:y=0:w=2560:h=1440,scale_vaapi=1920:1080:nv12' -c:v h264_vaapi "$1"
-ffmpeg -f pulse -ac 2 -i default -device /dev/dri/card1 -f kmsgrab -i - -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -r 60 -c:v h264_vaapi "$1"
+ffmpeg -f pulse -ac 2 -i default -device /dev/dri/card1 -f kmsgrab -i - -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -r 60 -c:v h264_vaapi -qscale:a 7 "$1"
