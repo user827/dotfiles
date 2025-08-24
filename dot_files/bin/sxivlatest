@@ -30,10 +30,10 @@ done
 
 findem() {
   find -H "$@" -type f -regextype posix-egrep -iregex \
-    '.+\.(jpe?g|png|bmp|gif|tiff)$'
+    '.+\.(jpe?g|png|bmp|gif|tiff|avif)$'
 }
 
-what='jpe?g|png|bmp|gif|tiff'
+what='jpe?g|png|bmp|gif|tiff|avif'
 
 sort_created() {
   sort -zk 1nr
