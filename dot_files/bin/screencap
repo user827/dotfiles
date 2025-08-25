@@ -3,14 +3,21 @@ set -eu
 
 # run with cap_sys_admin
 
+# check vainfo for allowed codecs
+codec=av1_vaapi
+
+# https://wiki.archlinux.org/title/Hardware_video_acceleration
 #https://ffmpeg.org/ffmpeg-devices.html#kmsgrab
 # https://trac.ffmpeg.org/wiki/Hardware/VAAPI
 # https://gist.github.com/Brainiarc7/95c9338a737aa36d9bb2931bed379219
 # https://trac.ffmpeg.org/wiki/Capture/PulseAudio
+# https://gist.github.com/Brainiarc7/95c9338a737aa36d9bb2931bed379219
+# https://trac.ffmpeg.org/wiki/Encode/AV1
+# https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/22585/commits
 
 ffmpeg \
   -f pulse -ac 2 -i default \
   -device /dev/dri/card1 -framerate 60 -f kmsgrab -i - \
-  -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v av1_vaapi -q:v 19 \
+  -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -q:v 22 \
   -qscale:a 7 \
   "$1"
