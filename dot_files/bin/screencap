@@ -4,7 +4,7 @@ set -eu
 # run with cap_sys_admin
 
 # check vainfo for allowed codecs
-codec=${codec:-h264_vulkan}
+codec=${codec:-av1_vaapi}
 
 # https://wiki.archlinux.org/title/Hardware_video_acceleration
 #https://ffmpeg.org/ffmpeg-devices.html#kmsgrab
@@ -19,17 +19,18 @@ codec=${codec:-h264_vulkan}
 
 #https://lists.ffmpeg.org/pipermail/ffmpeg-user/2020-November/050746.html
 
-# Use .ts container if oneting to stream the contianer
+# needed after kmsgrab?
+# -thread_queue_size 4096     \
+# -use_wallclock_as_timestamps 1 -fflags +genpts \
+# https://news.ycombinator.com/item?id=28622124
+# https://sources.debian.org/src/ffmpeg/7%3A5.1.6-0%2Bdeb12u1/libavdevice/kmsgrab.c/
+# - has pts = now
+
+# Use .ts container if wanting to stream the container
 ffmpeg \
   -hide_banner \
-  -init_hw_device vulkan=vk:0 \
-  -hwaccel vulkan \
-  -hwaccel_output_format vulkan \
-  -filter_hw_device vk \
   -f pulse -ac 2 -i default \
   -device /dev/dri/card1 -framerate 60 -f kmsgrab -i - \
-  -thread_queue_size 4096     \
-  -use_wallclock_as_timestamps 1 -fflags +genpts \
-  -vf 'hwmap=derive_device=vulkan,scale_vulkan=format=yuv420p' -c:v "$codec" -q:v 22 \
+  -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -q:v 22 \
   -qscale:a 7 \
   "$1"
