@@ -39,11 +39,14 @@ codec=${codec:-hevc_vaapi}
 # if preview blocks, it block the encoding also
 
 # Use .ts container if wanting to stream the container
+# itsoffset so that there is no lag with ffplay preview
 ffmpeg \
   -xerror -hide_banner \
-  -thread_queue_size 4096 -f pulse -ac 2 -i "$audiodevice" \
-  -thread_queue_size 1024 -device /dev/dri/card1 -framerate 60 -f kmsgrab -i - \
+  -itsoffset -0.4 -thread_queue_size 4096 -f pulse -ac 2 -i "$audiodevice" \
+  -itsoffset -0.4 -thread_queue_size 1024 -device /dev/dri/card1 -framerate 60 -f kmsgrab -i - \
+  -thread_queue_size 1024 \
+  -an -vf 'hwmap=derive_device=vaapi,scale_vaapi=w=2400:h=1350,hwdownload,format=bgr0' -f nut -c:v rawvideo - \
   -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -q:v 22 \
   -c:a libopus -b:a 160k \
-  -thread_queue_size 4096 \
-  "$@"
+  -thread_queue_size 1024 \
+  "$@" | ffplay -loglevel warning -vf setpts=0 -
