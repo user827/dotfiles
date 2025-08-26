@@ -38,8 +38,9 @@ codec=${codec:-av1_vaapi}
 # Use .ts container if wanting to stream the container
 ffmpeg \
   -xerror -hide_banner \
-  -f pulse -ac 2 -i default \
-  -device /dev/dri/card1 -framerate 60 -f kmsgrab -i - \
+  -thread_queue_size 4096 -f pulse -ac 2 -i default \
+  -thread_queue_size 1024 -device /dev/dri/card1 -framerate 60 -f kmsgrab -i - \
   -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -q:v 22 \
   -c:a libopus -b:a 160k \
+  -thread_queue_size 4096 \
   "$@"
