@@ -38,30 +38,23 @@ codec=${codec:-hevc_vaapi}
 
 # if preview blocks, it block the encoding also
 
+si=my-sink
+if ! pactl list short sinks | grep "$si"; then
+  echo loading sink
+  pactl load-module module-null-sink media.class=Audio/Sink sink_name="$si" channel_map=stere
+fi
+# To use the sink:
+# PULSE_SINK=$si app
+
 # Use .ts container if wanting to stream the container
 # itsoffset so that there is no lag with ffplay preview
 ffmpeg \
   -xerror -hide_banner \
-  -itsoffset -0.4 -thread_queue_size 4096 -f pulse -ac 2 -i "$audiodevice" \
+  -itsoffset -0.4 -thread_queue_size 4096 -f pulse -ac 2 -i "$si".monitor \
   -itsoffset -0.4 -thread_queue_size 1024 -device /dev/dri/card1 -framerate 60 -f kmsgrab -i - \
   -thread_queue_size 1024 \
   -an -vf 'hwmap=derive_device=vaapi,scale_vaapi=w=2400:h=1350,hwdownload,format=bgr0' -f nut -c:v rawvideo - \
   -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -q:v 22 \
   -c:a libopus -b:a 160k \
   -thread_queue_size 1024 \
-  "$@" | mpv --profile=low-latency \
-  --no-cache \
-  --no-audio \
-  --untimed \
-  --no-demuxer-thread \
-  --video-sync=desync \
-  --vd-lavc-threads=1 \
-  --vd-lavc-dr=no \
-  --hwdec=no \
-  --speed=1 \
-  --container-fps-override=60 \
-  --no-correct-pts \
-  --hr-seek=no \
-  --demuxer-readahead-secs=0 \
-  --demuxer-max-bytes=512K \
-  -
+  "$@" | ffplay -loglevel warning -
