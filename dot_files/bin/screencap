@@ -26,11 +26,15 @@ codec=${codec:-av1_vaapi}
 # https://sources.debian.org/src/ffmpeg/7%3A5.1.6-0%2Bdeb12u1/libavdevice/kmsgrab.c/
 # - has pts = now
 
+# https://trac.ffmpeg.org/wiki/Encode/HighQualityAudio
+
 # Use .ts container if wanting to stream the container
 ffmpeg \
   -hide_banner \
   -f pulse -ac 2 -i default \
-  -device /dev/dri/card1 -framerate 60 -f kmsgrab -i - \
+  -device /dev/dri/card1 -crtc_id 0 -f kmsgrab -i - \
+  -vf 'hwmap=derive_device=vaapi,hwdownload,format=bgr0,crop=1024:768:0:0' \
+  -f nut -c:v rawvideo - \
   -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -q:v 22 \
   -c:a libopus -b:a 160k \
-  "$1"
+  "$@" | ffplay -loglevel warning -vf setpts=0 -noborder -
