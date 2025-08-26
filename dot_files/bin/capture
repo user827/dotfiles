@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eu
 
+codec=${codec:-av1_vaapi}
+
 dir=~/Videos/camstreamer
 [ -d "$dir" ] || mkdir "$dir"
 cd "$dir"
@@ -26,11 +28,12 @@ while [ -e "$out" ]; do
   fi
 done
 
-ffmpeg -xerror \
-  -f v4l2 -framerate 30 -input_format yuyv422 -video_size 640x480 -i /dev/video0 \
-  -pix_fmt yuv420p -c:v libx264 -preset superfast \
+ffmpeg -xerror -hide_banner -vaapi_device /dev/dri/renderD128 -hwaccel_output_format vaapi -hwaccel vaapi \
+  -f v4l2 -framerate 60 -input_format mjpeg -video_size 1920x1080 -i /dev/video0 \
+  -vf 'scale_vaapi=format=nv12' -c:v "$codec" -q:v 22 \
   "$out" \
-  -f nut -c:v rawvideo - | ffplay -loglevel warning -vf setpts=0 -
+  -vf 'hwdownload,format=bgr0' -f nut -c:v rawvideo - \
+  | ffplay -loglevel warning -vf setpts=0 -
 
 # List available formats
 # ffplay -f video4linux2 -list_formats all /dev/video0

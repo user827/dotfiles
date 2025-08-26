@@ -28,9 +28,13 @@ codec=${codec:-av1_vaapi}
 
 # https://trac.ffmpeg.org/wiki/Encode/HighQualityAudio
 
+# use -report switch to see internal recorded to a file
+
+# if preview blocks, it block the encoding also
+
 # Use .ts container if wanting to stream the container
 ffmpeg \
-  -hide_banner \
+  -xerror -hide_banner \
   -f pulse -ac 2 -i default \
   -device /dev/dri/card1 -framerate 60 -f kmsgrab -i - \
   -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -q:v 22 \
