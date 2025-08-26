@@ -32,5 +32,5 @@ ffmpeg \
   -f pulse -ac 2 -i default \
   -device /dev/dri/card1 -framerate 60 -f kmsgrab -i - \
   -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -q:v 22 \
-  -qscale:a 7 \
+  -c:a libopus -b:a 160k \
   "$1"
