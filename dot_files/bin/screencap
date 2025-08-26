@@ -4,7 +4,7 @@ set -eu
 # run with cap_sys_admin
 
 # check vainfo for allowed codecs
-codec=av1_vaapi
+codec=${codec:-h264_vulkan}
 
 # https://wiki.archlinux.org/title/Hardware_video_acceleration
 #https://ffmpeg.org/ffmpeg-devices.html#kmsgrab
@@ -14,10 +14,22 @@ codec=av1_vaapi
 # https://gist.github.com/Brainiarc7/95c9338a737aa36d9bb2931bed379219
 # https://trac.ffmpeg.org/wiki/Encode/AV1
 # https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/22585/commits
+# https://superuser.com/questions/1190153/make-mkv-file-suitable-for-streaming-with-ffmpeg-or-avconv-how-to-move-all-m
+# https://gist.github.com/weedz/2717028bacfbdceed6522f3ced707e5f
 
+#https://lists.ffmpeg.org/pipermail/ffmpeg-user/2020-November/050746.html
+
+# Use .ts container if oneting to stream the contianer
 ffmpeg \
+  -hide_banner \
+  -init_hw_device vulkan=vk:0 \
+  -hwaccel vulkan \
+  -hwaccel_output_format vulkan \
+  -filter_hw_device vk \
   -f pulse -ac 2 -i default \
   -device /dev/dri/card1 -framerate 60 -f kmsgrab -i - \
-  -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -q:v 22 \
+  -thread_queue_size 4096     \
+  -use_wallclock_as_timestamps 1 -fflags +genpts \
+  -vf 'hwmap=derive_device=vulkan,scale_vulkan=format=yuv420p' -c:v "$codec" -q:v 22 \
   -qscale:a 7 \
   "$1"
