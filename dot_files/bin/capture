@@ -28,9 +28,13 @@ while [ -e "$out" ]; do
   fi
 done
 
+# pactl list short sources
+# https://trac.ffmpeg.org/wiki/Capture/PulseAudio
 ffmpeg -xerror -hide_banner -vaapi_device /dev/dri/renderD128 -hwaccel_output_format vaapi -hwaccel vaapi \
   -f v4l2 -framerate 60 -input_format mjpeg -video_size 1920x1080 -i /dev/video0 \
+  -f pulse -ac 2 -i default \
   -vf 'scale_vaapi=format=nv12' -c:v "$codec" -q:v 22 \
+  -b:a 160K -c:a libopus \
   "$out" \
   -vf 'hwdownload,format=bgr0' -f nut -c:v rawvideo - \
   | ffplay -loglevel warning -vf setpts=0 -

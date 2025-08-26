@@ -26,6 +26,9 @@ codec=${codec:-av1_vaapi}
 # https://sources.debian.org/src/ffmpeg/7%3A5.1.6-0%2Bdeb12u1/libavdevice/kmsgrab.c/
 # - has pts = now
 
+# hwdownload example
+#https://wiki.tonytascioglu.com/scripts/ffmpeg/kmsgrab_screen_capture
+
 # https://trac.ffmpeg.org/wiki/Encode/HighQualityAudio
 
 # use -report switch to see internal recorded to a file
