@@ -1,0 +1,35 @@
+#!/bin/sh
+set -eu
+
+ffmpeg \
+  -xerror -hide_banner \
+  -thread_queue_size 1024 -device /dev/dri/card1 -framerate 60000/1001 -f kmsgrab -i - \
+  -thread_queue_size 1024 \
+  -ss 1 -an -vf 'hwmap=derive_device=vaapi,scale_vaapi=w=1920:h=1080:format=bgra,hwdownload,format=bgr0' -f nut -c:v rawvideo - \
+  | mpv --profile=low-latency \
+  --no-osc \
+  --input-conf=/dev/null \
+  --no-input-default-bindings \
+  --no-input-terminal \
+  --no-config \
+  --really-quiet \
+  --cursor-autohide=no \
+  --no-cache \
+  --no-audio \
+  --untimed \
+  --no-demuxer-thread \
+  --video-sync=desync \
+  --vd-lavc-threads=1 \
+  --vd-lavc-dr=no \
+  --hwdec=no \
+  --speed=1 \
+  --container-fps-override=60 \
+  --no-correct-pts \
+  --hr-seek=no \
+  --demuxer-readahead-secs=0 \
+  --demuxer-max-bytes=512K \
+  -
+# mpv stops screensaver
+# preview outputs fixes ffmpeg ctrl-c
+# -itsoffset -0.4 to both video and audio would fix delay on preview
+# mpv --container-fps-override=60 is higher than in 60000/1001 which makes the preview catch up
