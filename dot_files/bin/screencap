@@ -14,7 +14,7 @@ set -eu
 # av1 has had bugs
 # av1 gives 1082 resolution and bad decoding performance
 # h264 gives smaller size and is slower eg better encoding
-codec=${codec:-h264_amf}
+codec=${codec:-h264_vaapi}
 
 # https://wiki.archlinux.org/title/Hardware_video_acceleration
 #https://ffmpeg.org/ffmpeg-devices.html#kmsgrab
@@ -68,7 +68,7 @@ ffmpeg \
   -thread_queue_size 1024 -device /dev/dri/card1 -framerate 60000/1001 -f kmsgrab -i - \
   -thread_queue_size 1024 \
   -ss 1 -an -vf 'hwmap=derive_device=vaapi,scale_vaapi=w=1920:h=1080:format=bgra,hwdownload,format=bgr0' -f nut -c:v rawvideo - \
-  -ss 1 -vf 'hwmap=derive_device=vaapi,hwdownload,format=yuv444p' -c:v "$codec" -preset quality -q:v 18 \
+  -ss 1 -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -q:v 18 \
   -c:a libopus -b:a 160k \
   -thread_queue_size 1024 \
   "$@" | mpv --profile=low-latency \
