@@ -1,6 +1,8 @@
 #!/bin/sh
 set -eu
 
+# https://github.com/russelltg/wl-screenrec
+
 . ~/.config/screencap.conf
 
 # about q and qp see -report also that they match
@@ -12,7 +14,7 @@ set -eu
 # av1 has had bugs
 # av1 gives 1082 resolution and bad decoding performance
 # h264 gives smaller size and is slower eg better encoding
-codec=${codec:-h264_vaapi}
+codec=${codec:-h264_vulkan}
 
 # https://wiki.archlinux.org/title/Hardware_video_acceleration
 #https://ffmpeg.org/ffmpeg-devices.html#kmsgrab
@@ -39,7 +41,11 @@ codec=${codec:-h264_vaapi}
 
 # https://trac.ffmpeg.org/wiki/Encode/HighQualityAudio
 
-# use -report switch to see internal recorded to a file
+# use
+# -report switch to see internal recorded to a file
+# ffmpeg -h encoder=h264_nvenc
+# vainfo, vainfo -a
+# pactl list short sinks
 
 # if preview blocks, it block the encoding also
 
@@ -53,19 +59,17 @@ fi
 
 # todo -ss on .mkv drops frames and has invalid framerate without -r
 
-# use
-# ffmpeg -h encoder=h264_nvenc
-
 # Use .ts container if wanting to stream the container
 # itsoffset so that there is no lag with ffplay preview
 # ss to skip the part where audio has began sooner or later
 ffmpeg \
   -xerror -hide_banner \
+  -init_hw_device vulkan=vkdev:0 -filter_hw_device vkdev \
   -thread_queue_size 1024 -f pulse -ac 2 -i "$si".monitor \
   -thread_queue_size 1024 -device /dev/dri/card1 -framerate 60000/1001 -f kmsgrab -i - \
   -thread_queue_size 1024 \
   -ss 1 -r 60000/1001 -an -vf 'hwmap=derive_device=vaapi,scale_vaapi=w=1920:h=1080:format=bgra,hwdownload,format=bgr0' -f nut -c:v rawvideo - \
-  -ss 1 -r 60000/1001 -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -q:v 18 \
+  -ss 1 -r 60000/1001 -vf 'hwmap=derive_device=vaapi,hwdownload,format=nv12,hwupload' -c:v "$codec" -q:v 18 \
   -c:a libopus -b:a 160k \
   -thread_queue_size 1024 \
   "$@" | mpv --profile=low-latency \
