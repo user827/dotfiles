@@ -1,0 +1,4 @@
+Cmnd_Alias FFMPEG = /usr/local/bin/runcapture *
+
+# ensure these run on bash and not some interpreter affected by the dangerous variables
+Defaults!FFMPEG !env_reset, !secure_path, !requiretty, closefrom_override, !use_pty, !pam_session, !set_logname, preserve_groups, closefrom=9000
