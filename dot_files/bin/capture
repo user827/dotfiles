@@ -47,8 +47,8 @@ shift
 # https://trac.ffmpeg.org/wiki/Capture/PulseAudio
 #https://trac.ffmpeg.org/wiki/Hardware/VAAPI
 ffmpeg -hide_banner -vaapi_device /dev/dri/renderD128 -hwaccel_output_format vaapi -hwaccel vaapi \
-  -itsoffset "$videodelay" -f v4l2 -framerate "$framerate" -input_format mjpeg -video_size "$resolution" -thread_queue_size 4096 -i /dev/video0 \
-  -f pulse -ac 2 -thread_queue_size 4096 -i "$audiodevice" \
+  -itsoffset "$videodelay" -f v4l2 -framerate "$framerate" -input_format mjpeg -video_size "$resolution" -thread_queue_size 1024 -i /dev/video0 \
+  -f pulse -ac 2 -thread_queue_size 1024 -i "$audiodevice" \
   -vf "scale_vaapi=format=nv12" -c:v "$codec" -q:v 22 \
   -b:a 160K -c:a libopus \
   -thread_queue_size 1024 \
