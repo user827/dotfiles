@@ -12,7 +12,7 @@ set -eu
 # av1 has had bugs
 # av1 gives 1082 resolution and bad decoding performance
 # h264 gives smaller size and is slower eg better encoding
-codec=${codec:-av1_vaapi}
+codec=${codec:-h264_vaapi}
 
 # https://wiki.archlinux.org/title/Hardware_video_acceleration
 #https://ffmpeg.org/ffmpeg-devices.html#kmsgrab

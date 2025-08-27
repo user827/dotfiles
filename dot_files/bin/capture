@@ -5,7 +5,7 @@ set -eu
 
 # av1 gives 1082 resolution and bad decoding performance
 # h264 gives smaller size and is slower eg better encoding
-codec=${codec:-hevc_vaapi}
+codec=${codec:-h264_vaapi}
 
 # about q and qp see -report also that they match
 # https://superuser.com/questions/1448982/will-i-get-any-visual-benefit-if-i-use-crf-values-below-17-18-in-x264-ffmpeg
