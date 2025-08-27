@@ -12,7 +12,7 @@ set -eu
 # av1 has had bugs
 # av1 gives 1082 resolution and bad decoding performance
 # h264 gives smaller size and is slower eg better encoding
-codec=${codec:-h264_vaapi}
+codec=${codec:-av1_vaapi}
 
 # https://wiki.archlinux.org/title/Hardware_video_acceleration
 #https://ffmpeg.org/ffmpeg-devices.html#kmsgrab
@@ -51,18 +51,20 @@ fi
 # To use the sink:
 # PULSE_SINK=$si app
 
+# todo -ss on .mkv drops frames and has invalid framerate without -r
+
 # Use .ts container if wanting to stream the container
 # itsoffset so that there is no lag with ffplay preview
 # ss to skip the part where audio has began sooner or later
 ffmpeg \
   -xerror -hide_banner \
   -thread_queue_size 1024 -f pulse -ac 2 -i "$si".monitor \
-  -thread_queue_size 1024 -device /dev/dri/card1 -framerate 60 -f kmsgrab -i - \
+  -thread_queue_size 1024 -device /dev/dri/card1 -framerate 60000/1001 -f kmsgrab -i - \
   -thread_queue_size 1024 \
-  -ss 1 -an -vf 'hwmap=derive_device=vaapi,scale_vaapi=w=1920:h=1080,hwdownload,format=bgr0' -f nut -c:v rawvideo - \
-  -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -q:v 18 \
+  -ss 1 -r 60000/1001 -an -vf 'hwmap=derive_device=vaapi,scale_vaapi=w=1920:h=1080,hwdownload,format=bgr0' -f nut -c:v rawvideo - \
+  -ss 1 -r 60000/1001 -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -q:v 18 \
   -c:a libopus -b:a 160k \
-  -ss 1 -thread_queue_size 1024 \
+  -thread_queue_size 1024 \
   "$@" | mpv --profile=low-latency \
   --no-osc \
   --input-conf=/dev/null \
