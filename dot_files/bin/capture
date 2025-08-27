@@ -58,7 +58,7 @@ ffmpeg -hide_banner -vaapi_device /dev/dri/renderD128 -hwaccel_output_format vaa
   -thread_queue_size 1024 \
   "$out" \
   -thread_queue_size 1024 \
-  -an -vf 'scale_vaapi=w=1280:h=720:format=bgra,hwdownload,format=bgra' -f nut -c:v rawvideo - \
+  -an -vf 'scale_vaapi=w=1280:h=720:format=bgra,hwdownload,format=bgr0' -f nut -c:v rawvideo - \
   "$@" | ffplay -loglevel warning -
 
 # List available formats
