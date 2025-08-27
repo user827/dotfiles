@@ -48,15 +48,16 @@ fi
 
 # Use .ts container if wanting to stream the container
 # itsoffset so that there is no lag with ffplay preview
+# ss to skip the part where audio has began sooner or later
 ffmpeg \
   -xerror -hide_banner \
   -thread_queue_size 1024 -f pulse -ac 2 -i "$si".monitor \
   -thread_queue_size 1024 -device /dev/dri/card1 -framerate 60 -f kmsgrab -i - \
   -thread_queue_size 1024 \
-  -an -vf 'hwmap=derive_device=vaapi,scale_vaapi=w=1920:h=1080,hwdownload,format=bgr0' -f nut -c:v rawvideo - \
+  -ss 1 -an -vf 'hwmap=derive_device=vaapi,scale_vaapi=w=1920:h=1080,hwdownload,format=bgr0' -f nut -c:v rawvideo - \
   -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -q:v 22 \
   -c:a libopus -b:a 160k \
-  -thread_queue_size 1024 \
+  -ss 1 -thread_queue_size 1024 \
   "$@" | mpv --profile=low-latency \
   --no-osc \
   --input-conf=/dev/null \
