@@ -76,7 +76,7 @@ ffmpeg \
   -xerror -hide_banner \
   -init_hw_device vulkan=vkdev:$vkdev -filter_hw_device vkdev \
   -f pulse -ac 2 -i "$si".monitor \
-  -device /dev/dri/card$displaydevice -framerate 60000/1001 -f kmsgrab -i - \
-  -ss 1 -r 60000/1001 -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12,hwdownload,format=nv12,hwupload' -c:v "$codec" -qp 18 \
+  -extra_hw_frames 3 -device /dev/dri/card$displaydevice -framerate 60000/1001 -f kmsgrab -i - \
+  -ss 1 -r 60000/1001 -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12,hwdownload,format=nv12,hwupload' -c:v "$codec" -tune hq -quality $quality -qp 18 \
   -c:a libopus -b:a 160k \
   "$@"

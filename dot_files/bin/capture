@@ -5,7 +5,7 @@ set -eu
 
 # av1 gives 1082 resolution and bad decoding performance
 # h264 gives smaller size and is slower eg better encoding
-codec=${codec:-h264_vulkan}
+codec=${codec:-hevc_vulkan}
 
 # about q and qp see -report also that they match
 # https://superuser.com/questions/1448982/will-i-get-any-visual-benefit-if-i-use-crf-values-below-17-18-in-x264-ffmpeg
@@ -53,12 +53,12 @@ shift
 ffmpeg -hide_banner \
   -init_hw_device vaapi=foo:$vaapidev -hwaccel_output_format vaapi -hwaccel vaapi \
   -init_hw_device vulkan=vkdev:$vkdev -filter_hw_device vkdev \
-  -itsoffset "$videodelay" -f v4l2 -framerate "$framerate" -input_format mjpeg -video_size "$resolution" -i /dev/video0 \
+  -hwaccel_device foo -extra_hw_frames 3 -itsoffset "$videodelay" -f v4l2 -framerate "$framerate" -input_format mjpeg -video_size "$resolution" -i /dev/video0 \
   -f pulse -ac 2 -i "$audiodevice" \
   -an -vf 'scale_vaapi=w=1280:h=720:format=bgra,hwdownload,format=bgr0' -f nut -c:v rawvideo - \
-  -ss 1 -vf "scale_vaapi=format=nv12,hwdownload,format=nv12,hwupload" -c:v "$codec" \
+  -ss 1 -vf "scale_vaapi=format=nv12,hwdownload,format=nv12,hwupload" -c:v "$codec" -qp 18 -tune hq -quality $quality \
   -b:a 160K -c:a libopus \
-  "$out" -report \
+  "$out" \
   "$@" | ffplay -loglevel warning -
 
 # List available formats
