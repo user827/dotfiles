@@ -71,7 +71,7 @@ ffmpeg \
   -init_hw_device vulkan=vkdev:0 -filter_hw_device vkdev \
   -f pulse -ac 2 -i "$si".monitor \
   -device /dev/dri/card1 -framerate 60000/1001 -f kmsgrab -i - \
-  -ss 1 -filter_complex 'hwmap=derive_device=vaapi,hwdownload,format=nv12,hwupload' -c:v "$codec" -tune hq -qp 18 \
+  -ss 1 -vf 'hwmap=derive_device=vaapi,hwdownload,format=nv12,hwupload' -c:v "$codec" -tune hq -qp 18 \
   -c:a libopus -b:a 160k \
   -thread_queue_size 1024 \
   "$@"
