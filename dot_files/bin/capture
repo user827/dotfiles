@@ -5,7 +5,7 @@ set -eu
 
 # av1 gives 1082 resolution and bad decoding performance
 # h264 gives smaller size and is slower eg better encoding
-codec=${codec:-hevc_nvenc}
+type_=sane
 
 # about q and qp see -report also that they match
 # https://superuser.com/questions/1448982/will-i-get-any-visual-benefit-if-i-use-crf-values-below-17-18-in-x264-ffmpeg
@@ -48,15 +48,32 @@ shift
 # sync issues
 # https://forum.zdoom.org/viewtopic.php?t=75912
 
-# https://trac.ffmpeg.org/wiki/Capture/PulseAudio
-#https://trac.ffmpeg.org/wiki/Hardware/VAAPI
-ffmpeg -hide_banner \
-  -init_hw_device cuda=foo:$vaapidev -hwaccel_output_format cuda -hwaccel cuda \
-  -hwaccel_device foo -itsoffset "$videodelay" -f v4l2 -framerate "$framerate" -input_format mjpeg -video_size "$resolution" -i /dev/video0 \
-  -an -vf 'scale_cuda=w=1280:h=720:format=nv12,hwdownload,format=nv12' -f nut -c:v rawvideo - \
-  -ss 1 -vf "scale_cuda=format=nv12" -c:v "$codec" \
-  "$out" \
-  "$@" | ffplay -loglevel warning -vf setpts=0 -
+ # https://trac.ffmpeg.org/wiki/Capture/PulseAudio
+ #https://trac.ffmpeg.org/wiki/Hardware/VAAPI
+if [ "$type_" = nvidia ]; then
+  codec=${codec:-hevc_nvenc}
+
+  ffmpeg -hide_banner \
+    -init_hw_device cuda=foo:$cudadev -hwaccel_output_format cuda -hwaccel cuda \
+    -hwaccel_device foo -itsoffset "$videodelay" -f v4l2 -framerate "$framerate" -input_format mjpeg -video_size "$resolution" -i /dev/video0 \
+    -f pulse -ac 2 -i "$audiodevice" \
+    -ss 1 -an -vf 'scale_cuda=w=1280:h=720:format=nv12,hwdownload,format=nv12' -f nut -c:v rawvideo - \
+    -ss 1 -vf "scale_cuda=format=nv12" -c:v "$codec" \
+    -b:a 160K -c:a libopus \
+    "$out" "$@" | ffplay -loglevel warning -vf setpts=0 -
+else
+  codec=${codec:-hevc_vulkan}
+
+  ffmpeg -hide_banner \
+    -init_hw_device vaapi=foo:$vaapidev -hwaccel_output_format vaapi -hwaccel vaapi \
+    -init_hw_device vulkan=vkdev:$vkdev -filter_hw_device vkdev \
+    -hwaccel_device foo -itsoffset "$videodelay" -f v4l2 -framerate "$framerate" -input_format mjpeg -video_size "$resolution" -i /dev/video0 \
+    -f pulse -ac 2 -i "$audiodevice" \
+    -ss 1 -an -vf 'scale_vaapi=w=1280:h=720:format=nv12,hwdownload,format=nv12' -f nut -c:v rawvideo - \
+    -ss 1 -vf "scale_vaapi=format=nv12,hwdownload,format=nv12,hwupload" -c:v "$codec" -qp 18 -tune hq -quality $quality \
+    -b:a 160K -c:a libopus \
+    "$out" "$@" | ffplay -loglevel warning -vf setpts=0 -
+fi
 
 # List available formats
 # ffplay -f video4linux2 -list_formats all /dev/video0
