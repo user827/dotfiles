@@ -3,9 +3,8 @@ set -eu
 
 ffmpeg \
   -xerror -hide_banner \
-  -thread_queue_size 1024 -device /dev/dri/card1 -framerate 60000/1001 -f kmsgrab -i - \
-  -thread_queue_size 1024 \
-  -ss 1 -an -vf 'hwmap=derive_device=vaapi,scale_vaapi=w=1920:h=1080:format=bgra,hwdownload,format=bgr0' -f nut -c:v rawvideo - \
+  -device /dev/dri/card1 -framerate 60000/1001 -f kmsgrab -i - \
+  -r 60000/1001 -ss 1 -an -vf 'hwmap=derive_device=vaapi,scale_vaapi=w=1920:h=1080:format=bgra,hwdownload,format=bgr0' -f nut -c:v rawvideo - \
   | mpv --profile=low-latency \
   --no-osc \
   --input-conf=/dev/null \
