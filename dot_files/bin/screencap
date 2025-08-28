@@ -67,12 +67,17 @@ fi
 # itsoffset so that there is no lag with ffplay preview
 # ss to skip the part where audio has began sooner or later
 # TODO use -vf 'hwmap=derive_device=vulkan,scale_vulkan=format=nv12' when fixed
+
+# fragmented mp4
+# https://stackoverflow.com/questions/8616855/how-to-output-fragmented-mp4-with-ffmpeg
+# https://superuser.com/questions/980272/what-movflags-frag-keyframeempty-moov-flag-means/1590691#1590691
+# -re ?
 ffmpeg \
   -xerror -hide_banner \
   -init_hw_device vulkan=vkdev:0 -filter_hw_device vkdev \
   -f pulse -ac 2 -i "$si".monitor \
   -device /dev/dri/card1 -framerate 60000/1001 -f kmsgrab -i - \
-  -ss 1 -vf 'hwmap=derive_device=vaapi,hwdownload,format=nv12,hwupload' -c:v "$codec" -tune hq -qp 18 \
+  -ss 1 -r 60000/1001 -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12,hwdownload,format=nv12,hwupload' -c:v "$codec" -quality 2 -tune hq -qp 18 \
   -c:a libopus -b:a 160k \
   -thread_queue_size 1024 \
   "$@"
