@@ -66,6 +66,7 @@ fi
 # Use .ts container if wanting to stream the container
 # itsoffset so that there is no lag with ffplay preview
 # ss to skip the part where audio has began sooner or later
+# TODO use -vf 'hwmap=derive_device=vulkan,scale_vulkan=format=nv12' when fixed
 ffmpeg \
   -xerror -hide_banner \
   -init_hw_device vulkan=vkdev:0 -filter_hw_device vkdev \
