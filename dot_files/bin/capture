@@ -51,12 +51,10 @@ shift
 # https://trac.ffmpeg.org/wiki/Capture/PulseAudio
 #https://trac.ffmpeg.org/wiki/Hardware/VAAPI
 ffmpeg -hide_banner \
-  -init_hw_device vaapi=foo:$vaapidev -hwaccel_output_format vaapi -hwaccel vaapi \
-  -hwaccel_device foo -extra_hw_frames 3 -itsoffset "$videodelay" -f v4l2 -framerate "$framerate" -input_format mjpeg -video_size "$resolution" -i /dev/video0 \
-  -f pulse -ac 2 -i "$audiodevice" \
-  -an -vf 'scale_vaapi=w=1280:h=720:format=nv12,hwdownload,format=nv12' -f nut -c:v rawvideo - \
-  -ss 1 -vf "scale_vaapi=format=nv12,hwdownload,format=nv12" -c:v "$codec" -preset p5 \
-  -b:a 160K -c:a libopus \
+  -init_hw_device cuda=foo:$vaapidev -hwaccel_output_format cuda -hwaccel cuda \
+  -hwaccel_device foo -itsoffset "$videodelay" -f v4l2 -framerate "$framerate" -input_format mjpeg -video_size "$resolution" -i /dev/video0 \
+  -an -vf 'scale_cuda=w=1280:h=720:format=nv12,hwdownload,format=nv12' -f nut -c:v rawvideo - \
+  -ss 1 -vf "scale_cuda=format=nv12" -c:v "$codec" \
   "$out" \
   "$@" | ffplay -loglevel warning -vf setpts=0 -
 
