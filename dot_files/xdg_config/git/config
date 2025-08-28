@@ -130,8 +130,8 @@
 [init]
 	defaultBranch = main
 
-[diff "lfs"]
-	textconv = cat
+#[diff "lfs"]
+        #textconv = cat
 
 # ignored by Git older than 1.7.10
 [include]
@@ -139,9 +139,3 @@
 
 [protocol "file"]
 	allow = always
-[credential]
-	credentialStore = gpg
-	helper = 
-	helper = /usr/local/bin/git-credential-manager
-[credential "https://dev.azure.com"]
-	useHttpPath = true
