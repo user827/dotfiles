@@ -60,7 +60,7 @@ if [ "$type_" = nvidia ]; then
     -ss 1 -an -vf 'scale_cuda=w=1280:h=720:format=nv12,hwdownload,format=nv12' -f nut -c:v rawvideo - \
     -ss 1 -vf "scale_cuda=format=nv12" -c:v "$codec" \
     -b:a 160K -c:a libopus \
-    "$out" "$@" | ffplay -loglevel warning -vf setpts=0 -
+    "$out" "$@"
 else
   codec=${codec:-hevc_vaapi}
 
@@ -73,8 +73,28 @@ else
     -ss 1 -an -vf 'scale_vaapi=w=1280:h=720:format=nv12,hwdownload,format=nv12' -f nut -c:v rawvideo - \
     -ss 1 -vf "scale_vaapi=format=nv12" -c:v "$codec" -qp 18 \
     -b:a 160K -c:a libopus \
-    "$out" "$@" | ffplay -loglevel warning -vf setpts=0 -
-fi
+    "$out" "$@"
+fi | mpv --profile=low-latency \
+  --no-osc \
+  --input-conf=/dev/null \
+  --no-input-default-bindings \
+  --no-input-terminal \
+  --no-config \
+  --really-quiet \
+  --cursor-autohide=no \
+  --no-cache \
+  --no-audio \
+  --untimed \
+  --no-demuxer-thread \
+  --video-sync=desync \
+  --vd-lavc-threads=1 \
+  --vd-lavc-dr=no \
+  --hwdec=no \
+  --speed=1 \
+  --hr-seek=no \
+  --demuxer-readahead-secs=0 \
+  --demuxer-max-bytes=512K \
+  -
 
 # List available formats
 # ffplay -f video4linux2 -list_formats all /dev/video0
