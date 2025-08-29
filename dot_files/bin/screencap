@@ -16,7 +16,10 @@ set -eu
 # h264 gives smaller size and is slower eg better encoding... with vaapi
 # prefer hevc gpu encoding over av1 https://www.reddit.com/r/AV1/comments/1jfejji/why_does_hevc_appear_to_be_better_than_av1/
 # also works with .ts
-codec=${codec:-hevc_vulkan}
+
+# vaapi better than vulkan because vaapi shos in gpu medai usage whereas vulkan
+# shows in general usage? bitrate for the same quality also lower
+codec=${codec:-h264_vaapi}
 
 # https://wiki.archlinux.org/title/Hardware_video_acceleration
 #https://ffmpeg.org/ffmpeg-devices.html#kmsgrab
@@ -75,10 +78,9 @@ fi
 # -r allow out of order frames by not dropping any?
 ffmpeg \
   -xerror -hide_banner \
-  -init_hw_device vulkan=vkdev:$vkdev -filter_hw_device vkdev \
   -f pulse -ac 2 -i "$si".monitor \
   -device /dev/dri/card$displaydevice -framerate 60000/1001 -f kmsgrab -i - \
-  -ss 1 -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12,hwdownload,format=nv12,hwupload' -c:v "$codec" -tune hq -quality $quality -qp 18 \
+  -ss 1 -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -qp 18 \
   -c:a libopus -b:a 160k \
   -fps_mode vfr \
   "$@"
