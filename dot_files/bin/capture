@@ -91,6 +91,8 @@ fi | mpv --profile=low-latency \
   --vd-lavc-dr=no \
   --hwdec=no \
   --speed=1 \
+  --container-fps-override=60 \
+  --no-correct-pts \
   --hr-seek=no \
   --demuxer-readahead-secs=0 \
   --demuxer-max-bytes=512K \
