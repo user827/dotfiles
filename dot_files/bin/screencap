@@ -76,9 +76,12 @@ fi
 # https://superuser.com/questions/980272/what-movflags-frag-keyframeempty-moov-flag-means/1590691#1590691
 # -re ?
 # -r allow out of order frames by not dropping any?
+
+# 32bit for audio encoders to use even if they output 16bit
+# https://hydrogenaudio.org/index.php/topic,118253.0.html
 ffmpeg \
   -xerror -hide_banner \
-  -f pulse -ac 2 -i "$si".monitor \
+  -f pulse -ac 2 -acodec pcm_s32le -i "$si".monitor \
   -device /dev/dri/card$displaydevice -framerate 60000/1001 -f kmsgrab -i - \
   -ss 1 -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=nv12' -c:v "$codec" -qp 18 \
   -c:a libopus -b:a 160k \
