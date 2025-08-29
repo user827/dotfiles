@@ -73,29 +73,7 @@ else
     -ss 1 -vf "scale_vaapi=format=nv12" -c:v "$codec" -qp 18 \
     -b:a 160K -c:a libopus \
     "$out" "$@"
-fi | mpv --profile=low-latency \
-  --no-osc \
-  --input-conf=/dev/null \
-  --no-input-default-bindings \
-  --no-input-terminal \
-  --no-config \
-  --really-quiet \
-  --cursor-autohide=no \
-  --no-cache \
-  --no-audio \
-  --untimed \
-  --no-demuxer-thread \
-  --video-sync=desync \
-  --vd-lavc-threads=1 \
-  --vd-lavc-dr=no \
-  --hwdec=no \
-  --speed=1 \
-  --container-fps-override=60 \
-  --no-correct-pts \
-  --hr-seek=no \
-  --demuxer-readahead-secs=0 \
-  --demuxer-max-bytes=512K \
-  -
+fi | ffplay -loglevel warning -vf setpts=0 -
 
 # List available formats
 # ffplay -f video4linux2 -list_formats all /dev/video0
