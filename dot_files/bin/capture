@@ -64,6 +64,7 @@ if [ "$type_" = nvidia ]; then
 else
   codec=${codec:-hevc_vulkan}
 
+  # TODO try buffer_size for pulse format
   ffmpeg -hide_banner \
     -init_hw_device vaapi=foo:$vaapidev -hwaccel_output_format vaapi -hwaccel vaapi \
     -init_hw_device vulkan=vkdev:$vkdev -filter_hw_device vkdev \

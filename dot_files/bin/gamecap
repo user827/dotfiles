@@ -1,6 +1,8 @@
 #!/bin/sh
 set -eu
 
+# mut youtube pakottaa 8bit 420 anyways
+
 . ~/.config/screencap.conf
 
 si=my-sink
@@ -8,12 +10,15 @@ if ! pactl list short sinks | grep "$si"; then
   echo loading sink
   pactl load-module module-null-sink media.class=Audio/Sink sink_name="$si" channel_map=stereo
 fi
+
+# 10bit rgb or yuv uses too much cpu
+  #eg. -vf 'hwmap=derive_device=vaapi,hwdownload,format=x2rgb10le,format=yuv444p10le' -c:v libx264 -pix_fmt yuv444p10le -preset ultrafast -qp 0
 ffmpeg \
   -xerror -hide_banner \
   -init_hw_device vulkan=vkdev:$vkdev -filter_hw_device vkdev \
-  -f pulse -ac 2 -i "$si".monitor \
+  -f pulse -ac 2 -acodec pcm_s32le -i "$si".monitor \
   -device /dev/dri/card$displaydevice -framerate 60000/1001 -f kmsgrab -i - \
   -ss 1 -vf 'hwmap=derive_device=vaapi,scale_vaapi=format=bgra,hwdownload,format=bgr0' -c:v libx264rgb -preset ultrafast -qp 0 \
-  -c:a flac \
+  -c:a flac -sample_fmt s32 \
   -fps_mode vfr \
   "$@"
