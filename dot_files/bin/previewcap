@@ -4,7 +4,7 @@ set -eu
 ffmpeg \
   -xerror -hide_banner \
   -device /dev/dri/card1 -framerate 60000/1001 -f kmsgrab -i - \
-  -ss 1 -vf 'hwmap=derive_device=vaapi,scale_vaapi=w=1920:h=1080:format=nv12,hwdownload,format=nv12' -f nut -c:v rawvideo - \
+  -vf 'hwmap=derive_device=vaapi,scale_vaapi=w=1920:h=1080:format=nv12,hwdownload,format=nv12' -f nut -c:v rawvideo - \
   | mpv --profile=low-latency \
   --no-osc \
   --input-conf=/dev/null \
