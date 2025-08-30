@@ -14,7 +14,7 @@ if ! pactl list short sinks | grep "$si"; then
   echo loading sink
   pactl load-module module-null-sink media.class=Audio/Sink sink_name="$si" channel_map=stereo
 fi
-exec gpu-screen-recorder -w screen -f 60 -a my-sink.monitor -q ultra -ab 160kbps -o ~/Videos/"video_$(date +"%F %T")".mkv
+exec gpu-screen-recorder -w "$1" -f 60 -a my-sink.monitor -q ultra -ab 160kbps -o ~/Videos/"video_$(date +"%F %T")".mkv
 
 # about q and qp see -report also that they match
 # https://superuser.com/questions/1448982/will-i-get-any-visual-benefit-if-i-use-crf-values-below-17-18-in-x264-ffmpeg
