@@ -1,9 +1,20 @@
 #!/bin/sh
 set -eu
 
-# https://github.com/russelltg/wl-screenrec
+# use gpu-screen-recorder instead. It doesn't drop frames and can show the
+# cursor.
+# rm cap_sys_admin so it requires sudo instead
+
+# see also https://github.com/russelltg/wl-screenrec
 
 . ~/.config/screencap.conf
+
+si=my-sink
+if ! pactl list short sinks | grep "$si"; then
+  echo loading sink
+  pactl load-module module-null-sink media.class=Audio/Sink sink_name="$si" channel_map=stereo
+fi
+exec gpu-screen-recorder -w screen -f 60 -a my-sink.monitor -q ultra -ab 160kbps -o ~/Videos/"video_$(date +"%F %T")".mkv
 
 # about q and qp see -report also that they match
 # https://superuser.com/questions/1448982/will-i-get-any-visual-benefit-if-i-use-crf-values-below-17-18-in-x264-ffmpeg
@@ -54,11 +65,6 @@ codec=${codec:-h264_vaapi}
 
 # if preview blocks, it block the encoding also
 
-si=my-sink
-if ! pactl list short sinks | grep "$si"; then
-  echo loading sink
-  pactl load-module module-null-sink media.class=Audio/Sink sink_name="$si" channel_map=stereo
-fi
 # To use the sink:
 # PULSE_SINK=$si app
 
