@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+
+. ~/.config/screencap.conf
+
+exec gpu-screen-recorder -w "$1" -f 60 -a default_output -k hevc -q ultra -ab 160kbps -o ~/Videos/"video_$(date +"%F %T")".mkv

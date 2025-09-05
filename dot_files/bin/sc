@@ -9,6 +9,10 @@ set -eu
 
 # see also https://github.com/russelltg/wl-screenrec
 
+# change xulstore picture-in-picture settings to capture video in firefox in
+# original resolution:
+# https://www.reddit.com/r/firefox/comments/1dtt4ea/i_want_to_set_the_resolution_of_firefoxs/
+
 . ~/.config/screencap.conf
 
 si=my-sink
@@ -16,6 +20,7 @@ if ! pactl list short sinks | grep "$si"; then
   echo loading sink
   pactl load-module module-null-sink media.class=Audio/Sink sink_name="$si" channel_map=stereo
 fi
+echo "using sink $si"
 exec gpu-screen-recorder -w "$1" -f 60 -a my-sink.monitor -k hevc -q ultra -ab 160kbps -o ~/Videos/"video_$(date +"%F %T")".mkv
 
 # about q and qp see -report also that they match
