@@ -1,0 +1,583 @@
+#!/bin/python
+
+import re
+import socket
+import json
+import subprocess
+import sys
+import pyinotify
+from tempfile import TemporaryDirectory
+import os
+import select
+from fcntl import fcntl, F_GETFL, F_SETFL
+from os import O_NONBLOCK
+import threading
+import queue
+
+MUSIC = 'mp4|m4a|mp3|flac|ogg|wma'
+VIDS = '3gp|avi|asf|divx|wmv|mp4|mkv|ts|m2ts|rmvb|mov|m4v|rv|ogm|flv|mpg' \
+        '|webm|video_ts.ifo'
+
+
+def trace(msg):
+    if loglevel >= 4:
+        print(msg)
+
+
+def debug(msg):
+    if loglevel >= 3:
+        print(msg)
+
+
+def info(msg):
+    if loglevel >= 2:
+        print(msg)
+
+
+def error(msg):
+    print(msg, file=sys.stderr)
+
+
+class MpvSocket():
+    def fileno(self):
+        return self.socket.fileno()
+
+
+class Mpv():
+    def __init__(self):
+        sockdir = TemporaryDirectory(prefix='mpvsocket')
+        sockname = 'mpvsocket'
+        sockpath = sockdir.name + '/' + sockname
+        debug(sockpath)
+        wm = pyinotify.WatchManager()
+        mask = pyinotify.IN_CREATE
+        class EventHandler(pyinotify.ProcessEvent):
+            waiting = True
+            def process_IN_CREATE(self, event):
+                if event.name == sockname:
+                    debug("socket appeared")
+                    self.waiting = False
+                else:
+                    info("unknown event: filename: {}".format(
+                        event.pathname))
+        self.handler = EventHandler()
+        ino = pyinotify.Notifier(wm, self.handler, timeout=3000)
+        wm.add_watch(sockdir.name, mask)
+
+        self.process = subprocess.Popen(
+                ['mpv', '--idle=once', '--input-ipc-server=' + sockpath])
+
+        self.sockdir = sockdir
+        self.sockname = sockname
+        self.sockpath = sockpath
+        self.ino = ino
+
+    def _wait_socket(self):
+        while self.handler.waiting and self.ino.check_events(timeout=3000):
+            self.ino.read_events()
+            self.ino.process_events()
+
+        self.ino = None
+        if self.handler.waiting:
+            raise RuntimeError('timeout')
+
+    def connect(self):
+        self._wait_socket()
+        mpvsocket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        mpvsocket.setblocking(False)
+        debug('connecting')
+        attempts = 0
+        while True:
+            try:
+                attempts += 1
+                mpvsocket.connect(self.sockpath)
+            except ConnectionRefusedError:
+                continue
+            break
+        debug('succeeded after ' + str(attempts) + ' attempts')
+
+        s = MpvSocket()
+        s.socket = mpvsocket
+        s.buf = BufferedInput(s.socket.recv, b'\n', 1024)
+        return s
+
+
+def worker(paths, reverse, queue, readablew, stopr):
+    try:
+        fd = FdLatest(paths, reverse)
+        try:
+            while not fd.eof():
+                (readables, _, _) = select.select([fd, stopr], [], [])
+                if stopr in readables:
+                    debug('got close signal')
+                    fd.terminate()
+                    break
+                assert(fd in readables)
+                while True:
+                    trace('queue')
+                    try:
+                        item = fd.readline()
+                    except BlockingIOError:
+                        break
+
+                    if item is None:
+                        break
+                    queue.put(item)
+                    os.write(readablew, b'x')
+
+        finally:
+            debug('thread waiting')
+            fd.wait()
+    finally:
+        queue.put(None)
+        debug('thread closing')
+        os.close(readablew)
+        os.close(stopr)
+
+
+class FdLatestThreaded():
+    def __init__(self, paths, reverse):
+        self.item_ready_r, item_ready_w = os.pipe()
+        stop_r, self.stop_w = os.pipe()
+        self.queue = queue.Queue()
+        self.thread = threading.Thread(
+                target=worker,
+                args=(paths, reverse, self.queue, item_ready_w, stop_r),
+                daemon=True)
+        self.thread.start()
+        self.is_eof = False
+
+    def readline(self):
+        if self.is_eof:
+            return None
+        trace('readpipe')
+        os.read(self.item_ready_r, 1)
+        trace('queueget')
+        path = self.queue.get(block=False)
+        if path is None:
+            self.is_eof = True
+        trace('return path')
+        return path
+
+    def fileno(self):
+        return self.item_ready_r
+
+    def terminate(self):
+        os.close(self.stop_w)
+        self.stop_w = None
+
+    def wait(self):
+        if self.stop_w is not None:
+            os.close(self.stop_w)
+        os.close(self.item_ready_r)
+        return self.thread.join()
+
+    def eof(self):
+        return self.is_eof
+
+
+class FdLatest():
+    def __init__(self, paths, reverse):
+        self.regex = re.compile('.+\\.('+VIDS+')$', re.I)
+        ents = []
+        if len(paths) == 0:
+            paths.append('.')
+        for p in paths:
+            try:
+                for e in os.listdir(p):
+                    e = p + '/' + e
+                    ents.append((e, os.path.getctime(e)))
+            except FileNotFoundError as e:
+                error(e)
+
+        self.sorted = sorted(ents, key=lambda p: p[1], reverse=not reverse)
+        self.fd = None
+        self.i = 0
+        self.is_eof = False
+
+        r, w = os.pipe()
+        os.close(w)
+        # always readable according to select(2)
+        self.r = r
+
+    def readline(self):
+        if self.is_eof:
+            return None
+
+        while True:
+            ent = None
+
+            if self.fd is not None:
+                ent = self.fd.readline()
+                if ent is None:
+                    # TODO why can't this be called inside destructor?
+                    self.fd.wait()
+                    self.fd = None
+                else:
+                    break
+
+            if self.i < len(self.sorted):
+                ent = self.sorted[self.i][0]
+                self.i += 1
+                if os.path.isdir(ent):
+                    self.fd = Fd([ent])
+                else:
+                    if self.regex.match(ent):
+                        break
+                    else:
+                        continue
+            else:
+                break
+
+        if ent is None:
+            self.is_eof = True
+        return ent
+
+    # we announce like everyone else that we are raedable when we are eof
+    # TODO this might return blockingio error even if we just promised we would
+    # have something to read
+    def fileno(self):
+        if self.fd is None:
+            return self.r
+        return self.fd.fileno()
+
+    def terminate(self):
+        if self.fd is not None:
+            return self.fd.terminate()
+
+    def wait(self):
+        os.close(self.r)
+        if self.fd is not None:
+            return self.fd.wait()
+
+    def eof(self):
+        return self.is_eof
+
+
+class Fd():
+    def __init__(self, paths):
+        debug('fd init with path count: ' + str(len(paths)))
+        if not paths:
+            paths.append('.')
+
+        dirs = []
+        self.files = []
+        for ent in paths:
+            if os.path.isdir(ent):
+                dirs.append(ent)
+            else:
+                self.files.append(ent)
+        r, w = os.pipe()
+
+        self.pid = None
+        if dirs:
+            self.pid = os.fork()
+            if self.pid == 0:
+                os.close(r)
+                os.dup2(w, 1)
+                env = os.environ.copy()
+                env['LC_ALL'] = 'C'
+                os.execlpe(
+                        'fd',
+                        'fd', '--type', 'f', '--print0',
+                        '.+\\.('+VIDS+')$', '--', *dirs, env)
+
+        os.close(w)
+        flags = fcntl(r, F_GETFL)  # get current p.stdout flags
+        fcntl(r, F_SETFL, flags | O_NONBLOCK)
+        self.buf = BufferedInput(
+                lambda b: os.read(self.r, b), b'\0', 4096)
+        self.r = r
+
+    def eof(self):
+        return not self.files and self.buf.eof
+
+    def readline(self):
+        if self.files:
+            return self.files.pop()
+
+        path = self.buf.readline()
+        while path is not None:
+            try:
+                return path.decode()
+            except UnicodeDecodeError:
+                error('invalid unicode')
+                path = self.buf.readline()
+                continue
+
+    def fileno(self):
+        return self.r
+
+    def terminate(self):
+        debug('terminate fd')
+        if self.pid is not None:
+            return os.kill(self.pid, 15)
+
+    def wait(self):
+        if self.pid is not None:
+            debug('wait fd')
+            os.waitpid(self.pid, 0)
+        os.close(self.r)
+
+
+class BufferedInput():
+    def __init__(self, read_cb, sep='\0', buf_size=4096):
+        self.sep = sep
+        self.buf_size = buf_size
+        self.read_cb = read_cb
+        self.eof = False
+        self.queue = []
+        self.i = 0
+        if isinstance(sep, str):
+            self.partial = ''
+        else:
+            self.partial = b''
+
+    def readline(self):
+        if self.eof:
+            return None
+        while True:
+            if self.i < len(self.queue):
+                item = self.queue[self.i]
+                self.i += 1
+                return item
+
+            buf = self.read_cb(self.buf_size)
+            if not buf:
+                self.eof = True
+                if self.partial:
+                    return self.partial
+                else:
+                    return None
+            self.partial += buf
+            lines = self.partial.split(self.sep)
+            self.partial = lines.pop()
+            self.queue = lines
+            self.i = 0
+
+
+class Transfer:
+    def __init__(self, fdout, mpv_socket):
+        self.found_files = 0
+        self.requests = 0
+        self.responses = 0
+        self.mpv_outbuf = b''
+        self.mpv_connected = True
+        self.readables = [mpv_socket, fdout]
+        self.writables = []
+        while self.mpv_connected and not (
+                fdout.eof() and (self.requests == self.responses)):
+            (readable, writable, exceptional) = \
+                    select.select(self.readables, self.writables, [])
+            did_nothing = True
+            if mpv_socket in readable:
+                self.process_mpv_responses(mpv_socket)
+                did_nothing = False
+            if mpv_socket in writable:
+                self.on_mpv_writable(fdout, mpv_socket)
+                did_nothing = False
+            if fdout in readable:
+                self.load_files(fdout, mpv_socket)
+                did_nothing = False
+            if did_nothing:
+                debug(readable)
+                debug(writable)
+                debug(exceptional)
+                raise RuntimeError('todo unknown event')
+            trace("responses: " +
+                  str(self.responses) +
+                  ", requests: " +
+                  str(self.requests))
+
+        debug('exit transfer loop')
+
+    def load_files(self, fdout, mpv_socket):
+        assert(mpv_socket not in self.writables)
+        debug('load files')
+        old_files_count = self.found_files
+        try:
+            while True:
+                path = fdout.readline()
+                if path is None:
+                    break
+                self.found_files += 1
+                self.requests += 1
+                # trace(path)
+                request = json.dumps(
+                        {'command':
+                            ['loadfile', path, 'append-play'],
+                            'request_id': self.requests})
+
+                trace(request)
+                # TODO cache encoder
+                request = request.encode() + b'\n'
+
+                if shuffle and self.found_files % 100 == 0:
+                    self.requests += 1
+                    shufflerequest = json.dumps(
+                            {'command': ['playlist-shuffle'],
+                                'request_id': self.requests})
+                    request += shufflerequest.encode() + b'\n'
+
+                try:
+                    self.mpv_write_interruptible(mpv_socket, request)
+                except BrokenPipeError:
+                    debug('mpv exited, broken pipe, found_files: ' +
+                          str(self.found_files - old_files_count))
+                    self.mpv_connected = False
+                    return
+                except BlockingIOError:
+                    debug('mpv write would block, found_files: ' +
+                          str(self.found_files - old_files_count))
+                    self.writables.append(mpv_socket)
+                    self.readables.remove(fdout)
+                    return
+
+        except BlockingIOError:
+            debug('fd would block, found_files: ' +
+                  str(self.found_files - old_files_count))
+            return
+
+        debug('fd eof, found_files: ' +
+              str(self.found_files - old_files_count))
+        debug('found files: ' + str(self.found_files))
+        self.readables.remove(fdout)
+
+        if shuffle and self.found_files % 100 != 0:
+            self.requests += 1
+            shufflerequest = json.dumps(
+                    {'command': ['playlist-shuffle'],
+                        'request_id': self.requests})
+            try:
+                self.mpv_write_interruptible(
+                        mpv_socket, shufflerequest.encode() + b'\n')
+            except BrokenPipeError:
+                debug('mpv exited, broken pipe')
+                self.mpv_connected = False
+            except BlockingIOError:
+                debug('end mpv write would block')
+                self.writables.append(mpv_socket)
+
+    def process_mpv_responses(self, mpv_socket):
+        debug('process mpv responses')
+        try:
+            while True:
+                item = mpv_socket.buf.readline()
+                if item is None:
+                    break
+                data = json.loads(item)
+                trace(data)
+                if 'request_id' in data:
+                    self.responses += 1
+                    if data['error'] != 'success':
+                        raise RuntimeError(
+                                "json command failed with: " + data.error)
+            self.mpv_in_partial = b''
+        except BlockingIOError:
+            debug('mpv read would block')
+            return
+
+        debug('mpv read eof')
+        self.mpv_connected = False
+
+    def mpv_write_interruptible(self, mpv_socket, bs=b''):
+        self.mpv_outbuf += bs
+        while self.mpv_outbuf != b'':
+            send_count = mpv_socket.socket.send(self.mpv_outbuf)
+            if send_count != len(self.mpv_outbuf):
+                debug('partial write')
+                self.mpv_outbuf = self.mpv_outbuf[send_count:]
+            else:
+                self.mpv_outbuf = b''
+
+    def on_mpv_writable(self, fdout, mpv_socket):
+        debug('on mpv writable')
+        assert(self.mpv_outbuf != b'')
+        assert(fdout not in self.readables)
+        try:
+            self.mpv_write_interruptible(mpv_socket)
+        except BrokenPipeError:
+            debug('mpv exited, broken pipe')
+            self.mpv_connected = False
+            return
+        except BlockingIOError:
+            debug('mpv write would block')
+            return
+        self.writables.remove(mpv_socket)
+        if not fdout.eof():
+            self.readables.append(fdout)
+
+
+loglevel = int(os.getenv('LOG_LEVEL', 2))
+
+shuffle = False
+
+
+def parse_args():
+    global shuffle
+    debug("name: " + sys.argv[0])
+    if os.path.basename(sys.argv[0]) == 'mpvrand' or (len(sys.argv) > 1 and sys.argv[1] == '-s'):
+        i = 1
+        if len(sys.argv) > 1 and sys.argv[1] == '-s':
+            i += 1
+        shuffle = True
+        return Fd(sys.argv[i:])
+    else:
+        i = 1
+        reverse = False
+        if len(sys.argv) >= 2:
+            if sys.argv[1] == '--':
+                i += 1
+            elif sys.argv[1] == '-r':
+                i += 1
+                reverse = True
+
+        debug("reverse: " + str(reverse))
+        return FdLatestThreaded(sys.argv[i:], reverse)
+
+
+def main():
+    # fd = Fd()
+    # fd = FdLatest()
+    fd = parse_args()
+
+    try:
+        mpv = Mpv()
+        try:
+            mpv_socket = mpv.connect()
+            transfer = Transfer(fd, mpv_socket)
+            if transfer.found_files == 0:
+                print('Nothing found')
+                mpv.process.terminate()
+
+            if not fd.eof():
+                debug('mpv closed before fd')
+                fd.terminate()
+
+            debug('closing connection')
+            # TODO need to empty the buf after this?
+            mpv_socket.socket.shutdown(socket.SHUT_RDWR)
+            mpv_socket.socket.close()
+
+        except Exception:
+            debug('exception: terminating mpv')
+            mpv.process.terminate()
+            raise
+
+        finally:
+            debug('waiting mpv')
+            mpv.process.wait()
+
+    except Exception:
+        debug('exception: terminating fd')
+        fd.terminate()
+        raise
+
+    finally:
+        fd.wait()
+
+    debug('normal exit')
+    sys.exit(mpv.process.returncode)
+
+
+main()
