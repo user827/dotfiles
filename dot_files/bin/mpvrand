@@ -266,27 +266,20 @@ class Fd():
                 dirs.append(ent)
             else:
                 self.files.append(ent)
-        r, w = os.pipe()
 
-        self.pid = None
-        if dirs:
-            self.pid = os.fork()
-            if self.pid == 0:
-                os.close(r)
-                os.dup2(w, 1)
-                env = os.environ.copy()
-                env['LC_ALL'] = 'C'
-                os.execlpe(
-                        'fd',
-                        'fd', '--type', 'f', '--print0',
-                        '.+\\.('+VIDS+')$', '--', *dirs, env)
+        env = os.environ.copy()
+        env['LC_ALL'] = 'C'
+        self.sub = subprocess.Popen(['fd', '--type', 'f', '--print0', '.+\\.('+VIDS+')$', '--', *dirs],
+                             stdout=subprocess.PIPE,
+                             env=env)
 
-        os.close(w)
+
+        r = self.sub.stdout.fileno()
         flags = fcntl(r, F_GETFL)  # get current p.stdout flags
         fcntl(r, F_SETFL, flags | O_NONBLOCK)
+
         self.buf = BufferedInput(
-                lambda b: os.read(self.r, b), b'\0', 4096)
-        self.r = r
+                lambda b: os.read(self.sub.stdout.fileno(), b), b'\0', 4096)
 
     def eof(self):
         return not self.files and self.buf.eof
@@ -305,18 +298,17 @@ class Fd():
                 continue
 
     def fileno(self):
-        return self.r
+        return self.sub.stdout.fileno()
 
     def terminate(self):
         debug('terminate fd')
-        if self.pid is not None:
-            return os.kill(self.pid, 15)
+        if self.sub is not None:
+            return self.sub.terminate()
 
     def wait(self):
-        if self.pid is not None:
+        if self.sub is not None:
             debug('wait fd')
-            os.waitpid(self.pid, 0)
-        os.close(self.r)
+            self.sub.wait()
 
 
 class BufferedInput():
