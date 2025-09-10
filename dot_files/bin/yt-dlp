@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+if [ "${DESKTOP_SESSION:-}" = gnome ]; then
+  exec gnome-session-inhibit --app-id yt-dlp --reason dling --inhibit suspend /usr/bin/yt-dlp "$@"
+fi
+exec /usr/bin/yt-dlp "$@"

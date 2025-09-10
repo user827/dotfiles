@@ -14,7 +14,6 @@ from os import O_NONBLOCK
 import threading
 import queue
 
-MUSIC = 'mp4|m4a|mp3|flac|ogg|wma'
 VIDS = '3gp|avi|asf|divx|wmv|mp4|mkv|ts|m2ts|rmvb|mov|m4v|rv|ogm|flv|mpg' \
         '|webm|video_ts.ifo'
 
