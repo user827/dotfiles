@@ -15,7 +15,7 @@ import threading
 import queue
 
 VIDS = '3gp|avi|asf|divx|wmv|mp4|mkv|ts|m2ts|rmvb|mov|m4v|rv|ogm|flv|mpg' \
-        '|webm|video_ts.ifo'
+        '|webm|video_ts.ifo|part'
 
 
 def trace(msg):

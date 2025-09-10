@@ -7,9 +7,7 @@ if [ -z "${is_sleep_inhibited:-}" ]; then
 fi
 
 for _try in $(seq 3); do
-  if yt-dlp "$@"; then
-    break
-  fi
+  yt-dlp "$@" || true
   echo sleeping
   sleep $((15*60))
 done
