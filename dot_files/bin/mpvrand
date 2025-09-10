@@ -274,12 +274,13 @@ class Fd():
                              env=env)
 
 
-        r = self.sub.stdout.fileno()
-        flags = fcntl(r, F_GETFL)  # get current p.stdout flags
-        fcntl(r, F_SETFL, flags | O_NONBLOCK)
+        # TODO BufferedInput thinks it's eof if read returns none
+        #r = self.sub.stdout.fileno()
+        #flags = fcntl(r, F_GETFL)  # get current p.stdout flags
+        #fcntl(r, F_SETFL, flags | O_NONBLOCK)
 
         self.buf = BufferedInput(
-                lambda b: os.read(self.sub.stdout.fileno(), b), b'\0', 4096)
+                lambda n: self.sub.stdout.read(n), b'\0', 4096)
 
     def eof(self):
         return not self.files and self.buf.eof
@@ -295,7 +296,6 @@ class Fd():
             except UnicodeDecodeError:
                 error('invalid unicode')
                 path = self.buf.readline()
-                continue
 
     def fileno(self):
         return self.sub.stdout.fileno()
@@ -390,6 +390,7 @@ class Transfer:
             while True:
                 path = fdout.readline()
                 if path is None:
+                    debug('path none')
                     break
                 self.found_files += 1
                 self.requests += 1
@@ -524,6 +525,7 @@ def parse_args():
                 reverse = True
 
         debug("reverse: " + str(reverse))
+        debug('fdlatest')
         return FdLatestThreaded(sys.argv[i:], reverse)
 
 
