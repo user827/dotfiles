@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu
+
+if [ -z "${is_sleep_inhibited:-}" ]; then
+  export is_sleep_inhibited=1
+  exec gnome-session-inhibit --app-id yt-dlp-retry --reason dling --inhibit suspend "$0" "$@"
+fi
+
+for _try in $(seq 3); do
+  if yt-dlp "$@"; then
+    break
+  fi
+  echo sleeping
+  sleep $((15*60))
+done

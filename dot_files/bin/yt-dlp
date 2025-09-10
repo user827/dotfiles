@@ -1,5 +1,9 @@
 #!/bin/sh
 set -eu
+
+if [ -n "${is_sleep_inhibited:-}" ]; then
+  exec /usr/bin/yt-dlp "$@"
+fi
 if [ "${DESKTOP_SESSION:-}" = gnome ]; then
   exec gnome-session-inhibit --app-id yt-dlp --reason dling --inhibit suspend /usr/bin/yt-dlp "$@"
 fi
