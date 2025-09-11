@@ -9,7 +9,6 @@ import pyinotify
 from tempfile import TemporaryDirectory
 import os
 import select
-from fcntl import fcntl, F_GETFL, F_SETFL
 from os import O_NONBLOCK
 import threading
 import queue
@@ -274,10 +273,7 @@ class Fd():
                              env=env)
 
 
-        # TODO BufferedInput thinks it's eof if read returns none
-        #r = self.sub.stdout.fileno()
-        #flags = fcntl(r, F_GETFL)  # get current p.stdout flags
-        #fcntl(r, F_SETFL, flags | O_NONBLOCK)
+        os.set_blocking(self.sub.stdout.fileno(), False)
 
         self.buf = BufferedInput(
                 lambda n: self.sub.stdout.read(n), b'\0', 4096)
@@ -324,6 +320,7 @@ class BufferedInput():
         else:
             self.partial = b''
 
+    # Is expected to raise BlockingIOError when the read would block
     def readline(self):
         if self.eof:
             return None
