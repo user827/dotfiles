@@ -148,13 +148,13 @@ class FdLatestThreaded():
     def readline(self):
         if self.is_eof:
             return None
-        trace('readpipe')
+        trace('fdlatest readpipe')
         os.read(self.item_ready_r, 1)
-        trace('queueget')
+        trace('fdlatest queueget')
         path = self.queue.get(block=False)
         if path is None:
             self.is_eof = True
-        trace('return path')
+        trace('fdlatest return path')
         return path
 
     def fileno(self):
@@ -262,6 +262,7 @@ class Fd():
         self.files = []
         for ent in paths:
             if os.path.isdir(ent):
+                trace('fd: dir ' + ent)
                 dirs.append(ent)
             else:
                 self.files.append(ent)
@@ -272,21 +273,22 @@ class Fd():
                              stdout=subprocess.PIPE,
                              env=env)
 
-
         os.set_blocking(self.sub.stdout.fileno(), False)
 
         self.buf = BufferedInput(
-                lambda n: self.sub.stdout.read(n), b'\0', 4096)
+                lambda n: os.read(self.sub.stdout.fileno(),n), b'\0', 4096)
 
     def eof(self):
         return not self.files and self.buf.eof
 
     def readline(self):
+        trace('fd: readline')
         if self.files:
             return self.files.pop()
 
         path = self.buf.readline()
         while path is not None:
+            trace('fd: not none')
             try:
                 return path.decode()
             except UnicodeDecodeError:
@@ -331,6 +333,7 @@ class BufferedInput():
                 return item
 
             buf = self.read_cb(self.buf_size)
+            trace('fd: not none')
             if not buf:
                 self.eof = True
                 if self.partial:
@@ -353,6 +356,7 @@ class Transfer:
         self.mpv_connected = True
         self.readables = [mpv_socket, fdout]
         self.writables = []
+        debug('transfer')
         while self.mpv_connected and not (
                 fdout.eof() and (self.requests == self.responses)):
             (readable, writable, exceptional) = \
@@ -372,16 +376,16 @@ class Transfer:
                 debug(writable)
                 debug(exceptional)
                 raise RuntimeError('todo unknown event')
-            trace("responses: " +
+            trace("transfer responses: " +
                   str(self.responses) +
                   ", requests: " +
                   str(self.requests))
 
-        debug('exit transfer loop')
+        debug('transfer exit transfer loop')
 
     def load_files(self, fdout, mpv_socket):
         assert(mpv_socket not in self.writables)
-        debug('load files')
+        debug('transfer load files')
         old_files_count = self.found_files
         try:
             while True:
@@ -389,6 +393,7 @@ class Transfer:
                 if path is None:
                     debug('path none')
                     break
+                trace('transfer read: ' + path)
                 self.found_files += 1
                 self.requests += 1
                 # trace(path)

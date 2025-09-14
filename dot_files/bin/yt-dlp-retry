@@ -6,8 +6,8 @@ if [ -z "${is_sleep_inhibited:-}" ]; then
   exec gnome-session-inhibit --app-id yt-dlp-retry --reason dling --inhibit suspend "$0" "$@"
 fi
 
-for _try in $(seq 10); do
+for _try in $(seq 20); do
   yt-dlp "$@" || true
   echo sleeping
-  sleep $((15*60))
+  sleep $((5*60))
 done
