@@ -54,17 +54,13 @@ local function move(destbase, src)
   end
 end
 
-local init = {}
 local function doit(id, lvl)
   printdbg('init ' .. id)
   local dir = o.destbase .. id
-  if not init[id] then
-    local err = mputils.subprocess({ args = { 'mkdir', '-p', '--', dir } })['status']
-    if err ~= 0 then
-      info("Cannot create " .. dir .. ": " .. err)
-      return
-    end
-    init[id] = true
+  local err = mputils.subprocess({ args = { 'mkdir', '-p', '--', dir } })['status']
+  if err ~= 0 then
+    info("Cannot create " .. dir .. ": " .. err)
+    return
   end
   move(dir, lvl)
 end
