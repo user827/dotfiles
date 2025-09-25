@@ -9,7 +9,7 @@ if [ -z "${is_sleep_inhibited:-}" ]; then
 fi
 
 while true; do
-  yt-dlp ${YT_DLP_RETRY_ARGS:-} --socket-timeout 5 "$@" || true
+  yt-dlp --socket-timeout 5 "$@" || true
   echo sleeping
   sleep 60
 done
