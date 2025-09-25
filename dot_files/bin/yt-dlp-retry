@@ -8,8 +8,8 @@ if [ -z "${is_sleep_inhibited:-}" ]; then
   exec gnome-session-inhibit --app-id yt-dlp-retry --reason dling --inhibit suspend "$0" "$@"
 fi
 
-for _try in $(seq 150); do
-  yt-dlp "$@" || true
+while true; do
+  yt-dlp ${YT_DLP_RETRY_ARGS:-} --socket-timeout 5 "$@" || true
   echo sleeping
   sleep 60
 done
