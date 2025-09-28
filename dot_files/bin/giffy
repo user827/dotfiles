@@ -26,7 +26,7 @@ while [ $# -gt 0 ]; do
       ;;
     --text)
       #https://ffmpeg.shanewhite.co/
-      text=$2,
+      text=,$2
       shift 2
       ;;
     --loop)
@@ -61,21 +61,21 @@ fi
 crop=
 if [ "$docrop" != 0 ]; then
   IFS=: read -r h x y <<<"$docrop"
-  crop=crop=w=$(( ((maxwidth * 1000 / height) * h) / 1000 )):h=$h:x=$x:y=$y,
+  crop=crop=w=$(( ((maxwidth * 1000 / height) * h + 500) / 1000 )):h=$h:x=$x:y=$y,
   echo "$crop"
 fi
 
 if [ "$dointerpolate" != 0 ]; then
   # smoother than only interpolating to fps 30 when the input is jittery
   fps=$dointerpolate
-  interpolate="minterpolate='fps=$dointerpolate',"
+  interpolate=",minterpolate='fps=$dointerpolate'"
   r="-r 30"
 fi
 
 loop=
 if [ "$doloop" != 0 ]; then
   #https://superuser.com/questions/1089525/how-to-loop-a-video-back-and-forth-with-ffmpeg
-  loop="reverse[r];[0][r]concat,setpts=N/$fps/TB",
+  loop=",split[int1][int2];[int2]reverse[r];[int1][r]concat,setpts=N/$fps/TB"
 fi
 
 file=$1
@@ -87,5 +87,5 @@ shift 3
 ffmpeg \
   -ss "$ss" -to "$to" $slowdown \
   -i "$file" \
-  -filter_complex "[0]${crop}scale=-1:$height,${interpolate}${loop}${text}split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
+  -filter_complex "${crop}scale=-1:$height${interpolate}${loop}${text},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
   $r "$@" "$file".gif
