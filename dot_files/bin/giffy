@@ -1,11 +1,15 @@
 #!/bin/bash
 set -eu
 
-fps=
+slowdown=
 interpolate=
 r=
 
+text=
+
 docrop=0
+doloop=0
+dointerpolate=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --maxwidth)
@@ -20,11 +24,22 @@ while [ $# -gt 0 ]; do
       docrop=$2
       shift 2
       ;;
-    --fps)
-      fps="-fflags +genpts -r $2"
-      # smoother than only interpolating to fps 30 when the input is jittery
-      interpolate="minterpolate='fps=60',"
-      r="-r 30"
+    --text)
+      #https://ffmpeg.shanewhite.co/
+      text=$2,
+      shift 2
+      ;;
+    --loop)
+      doloop=1
+      shift
+      ;;
+    --slowdown)
+      slowdown="-fflags +genpts -r $2"
+      fps=$2
+      shift 2
+      ;;
+    --interpolate)
+      dointerpolate=$2
       shift 2
       ;;
     *)
@@ -50,6 +65,19 @@ if [ "$docrop" != 0 ]; then
   echo "$crop"
 fi
 
+if [ "$dointerpolate" != 0 ]; then
+  # smoother than only interpolating to fps 30 when the input is jittery
+  fps=$dointerpolate
+  interpolate="minterpolate='fps=$dointerpolate',"
+  r="-r 30"
+fi
+
+loop=
+if [ "$doloop" != 0 ]; then
+  #https://superuser.com/questions/1089525/how-to-loop-a-video-back-and-forth-with-ffmpeg
+  loop="reverse[r];[0][r]concat,setpts=N/$fps/TB",
+fi
+
 file=$1
 ss=$2
 to=$3
@@ -57,7 +85,7 @@ shift 3
 
 # https://askubuntu.com/questions/648603/how-to-create-an-animated-gif-from-mp4-video-via-command-line
 ffmpeg \
-  -ss "$ss" -to "$to" $fps \
+  -ss "$ss" -to "$to" $slowdown \
   -i "$file" \
-  -vf "${crop}scale=-1:$height,${interpolate}split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
+  -filter_complex "[0]${crop}scale=-1:$height,${interpolate}${loop}${text}split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
   $r "$@" "$file".gif
