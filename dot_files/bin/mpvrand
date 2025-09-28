@@ -14,7 +14,7 @@ import threading
 import queue
 
 VIDS = '3gp|avi|asf|divx|wmv|mp4|mkv|ts|m2ts|rmvb|mov|m4v|rv|ogm|flv|mpg' \
-        '|webm|video_ts.ifo|part'
+        '|webm|video_ts.ifo'
 
 
 def trace(msg):
@@ -525,6 +525,10 @@ def parse_args():
             elif sys.argv[1] == '-r':
                 i += 1
                 reverse = True
+            elif sys.argv[1] == '-p':
+                i += 1
+                global VIDS
+                VIDS += '|part'
 
         debug("reverse: " + str(reverse))
         debug('fdlatest')
