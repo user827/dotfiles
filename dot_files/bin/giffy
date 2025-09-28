@@ -34,8 +34,8 @@ while [ $# -gt 0 ]; do
       shift
       ;;
     --slowdown)
-      slowdown="-fflags +genpts -r $2"
-      fps=$2
+      slowdown=",setpts=$2*PTS"
+      #https://stackoverflow.com/questions/72145599/ffmpeg-change-video-speed-with-r-vs-filter-and-setpts
       shift 2
       ;;
     --interpolate)
@@ -67,15 +67,18 @@ fi
 
 if [ "$dointerpolate" != 0 ]; then
   # smoother than only interpolating to fps 30 when the input is jittery
-  fps=$dointerpolate
   interpolate=",minterpolate='fps=$dointerpolate'"
-  r="-r 30"
+  #r="-r 30"
 fi
 
 loop=
 if [ "$doloop" != 0 ]; then
+  # https://stackoverflow.com/questions/2017843/fetch-frame-count-with-ffmpeg/28376817#28376817
   #https://superuser.com/questions/1089525/how-to-loop-a-video-back-and-forth-with-ffmpeg
-  loop=",split[int1][int2];[int2]reverse[r];[int1][r]concat,setpts=N/$fps/TB"
+  loop=",split[int1][int2];[int2]trim=start_frame=1,setpts=PTS-STARTPTS,reverse,trim=start_frame=1,setpts=PTS-STARTPTS[r];[int1][r]concat"
+  # TODO drops frames without
+  #loop=",split[int1][int2];[int2]reverse[r];[int1][r]concat,setpts=N/$fps/TB"
+  # ?
 fi
 
 file=$1
@@ -84,8 +87,9 @@ to=$3
 shift 3
 
 # https://askubuntu.com/questions/648603/how-to-create-an-animated-gif-from-mp4-video-via-command-line
+# https://superuser.com/questions/1608327/ffmpeg-boomerang-effect-to-gif
 ffmpeg \
-  -ss "$ss" -to "$to" $slowdown \
+  -ss "$ss" -to "$to" \
   -i "$file" \
-  -filter_complex "${crop}scale=-1:$height${interpolate}${loop}${text},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
-  $r "$@" "$file".gif
+  -filter_complex "${crop}scale=-1:$height${slowdown}${interpolate}${loop}${text},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
+  "$@" "$file".gif
