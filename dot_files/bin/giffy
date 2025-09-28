@@ -3,12 +3,11 @@ set -eu
 
 slowdown=
 interpolate=
-r=
 
 text=
 
 docrop=0
-doloop=0
+doboomerang=0
 dointerpolate=0
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -29,8 +28,8 @@ while [ $# -gt 0 ]; do
       text=,$2
       shift 2
       ;;
-    --loop)
-      doloop=1
+    --boomerang)
+      doboomerang=1
       shift
       ;;
     --slowdown)
@@ -67,17 +66,18 @@ fi
 
 if [ "$dointerpolate" != 0 ]; then
   # smoother than only interpolating to fps 30 when the input is jittery
-  interpolate=",minterpolate='fps=$dointerpolate'"
-  #r="-r 30"
+  # remove hiccups also https://stackoverflow.com/questions/37088517/remove-sequentially-duplicate-frames-when-using-ffmpeg
+  # https://www.reddit.com/r/ffmpeg/comments/koaq7h/replace_duplicates_with_resample/
+  interpolate=",mpdecimate,minterpolate='fps=$dointerpolate'"
 fi
 
-loop=
-if [ "$doloop" != 0 ]; then
+boomerang=
+if [ "$doboomerang" != 0 ]; then
   # https://stackoverflow.com/questions/2017843/fetch-frame-count-with-ffmpeg/28376817#28376817
   #https://superuser.com/questions/1089525/how-to-loop-a-video-back-and-forth-with-ffmpeg
-  loop=",split[int1][int2];[int2]trim=start_frame=1,setpts=PTS-STARTPTS,reverse,trim=start_frame=1,setpts=PTS-STARTPTS[r];[int1][r]concat"
+  boomerang=",split[int1][int2];[int2]trim=start_frame=1,setpts=PTS-STARTPTS,reverse,trim=start_frame=1,setpts=PTS-STARTPTS[r];[int1][r]concat"
   # TODO drops frames without
-  #loop=",split[int1][int2];[int2]reverse[r];[int1][r]concat,setpts=N/$fps/TB"
+  #boomerang=",split[int1][int2];[int2]reverse[r];[int1][r]concat,setpts=N/$fps/TB"
   # ?
 fi
 
@@ -88,9 +88,8 @@ shift 3
 
 # https://askubuntu.com/questions/648603/how-to-create-an-animated-gif-from-mp4-video-via-command-line
 # https://superuser.com/questions/1608327/ffmpeg-boomerang-effect-to-gif
-# remove hiccups also https://stackoverflow.com/questions/37088517/remove-sequentially-duplicate-frames-when-using-ffmpeg
 ffmpeg \
   -ss "$ss" -to "$to" \
   -i "$file" \
-  -filter_complex "${crop}scale=-1:$height${slowdown},mpdecimate${interpolate}${loop}${text},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
+  -filter_complex "${crop}scale=-1:$height${slowdown}${interpolate}${boomerang}${text},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
   "$@" "$file".gif
