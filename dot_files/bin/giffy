@@ -88,8 +88,9 @@ shift 3
 
 # https://askubuntu.com/questions/648603/how-to-create-an-animated-gif-from-mp4-video-via-command-line
 # https://superuser.com/questions/1608327/ffmpeg-boomerang-effect-to-gif
+# remove hiccups also https://stackoverflow.com/questions/37088517/remove-sequentially-duplicate-frames-when-using-ffmpeg
 ffmpeg \
   -ss "$ss" -to "$to" \
   -i "$file" \
-  -filter_complex "${crop}scale=-1:$height${slowdown}${interpolate}${loop}${text},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
+  -filter_complex "${crop}scale=-1:$height${slowdown},mpdecimate${interpolate}${loop}${text},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
   "$@" "$file".gif
