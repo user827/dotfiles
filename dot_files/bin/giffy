@@ -1,0 +1,63 @@
+#!/bin/bash
+set -eu
+
+fps=
+interpolate=
+r=
+
+docrop=0
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --maxwidth)
+      maxwidth=$2
+      shift 2
+      ;;
+    --height)
+      height=$2
+      shift 2
+      ;;
+    --crop)
+      docrop=$2
+      shift 2
+      ;;
+    --fps)
+      fps="-fflags +genpts -r $2"
+      # smoother than only interpolating to fps 30 when the input is jittery
+      interpolate="minterpolate='fps=60',"
+      r="-r 30"
+      shift 2
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [ -z "${maxwidth:-}" ]; then
+  echo "No maxwidth specified" >&2
+  exit 1
+fi
+
+if [ -z "${height:-}" ]; then
+  echo "No height specified" >&2
+  exit 1
+fi
+
+crop=
+if [ "$docrop" != 0 ]; then
+  IFS=: read -r h x y <<<"$docrop"
+  crop=crop=w=$(( ((maxwidth * 1000 / height) * h) / 1000 )):h=$h:x=$x:y=$y,
+  echo "$crop"
+fi
+
+file=$1
+ss=$2
+to=$3
+shift 3
+
+# https://askubuntu.com/questions/648603/how-to-create-an-animated-gif-from-mp4-video-via-command-line
+ffmpeg \
+  -ss "$ss" -to "$to" $fps \
+  -i "$file" \
+  -vf "${crop}scale=-1:$height,${interpolate}split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
+  $r "$@" "$file".gif
