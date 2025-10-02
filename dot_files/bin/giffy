@@ -11,8 +11,8 @@ doboomerang=0
 dointerpolate=0
 while [ $# -gt 0 ]; do
   case "$1" in
-    --maxwidth)
-      maxwidth=$2
+    --width)
+      width=$2
       shift 2
       ;;
     --height)
@@ -51,8 +51,8 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-if [ -z "${maxwidth:-}" ]; then
-  echo "No maxwidth specified" >&2
+if [ -z "${width:-}" ]; then
+  echo "No width specified" >&2
   exit 1
 fi
 
@@ -64,7 +64,7 @@ fi
 crop=
 if [ "$docrop" != 0 ]; then
   IFS=: read -r h x y <<<"$docrop"
-  crop=crop=w=$(( ((maxwidth * 1000 / height) * h + 500) / 1000 )):h=$h:x=$x:y=$y,
+  crop=crop=w=$(( ((width * 1000 / height) * h + 500) / 1000 )):h=$h:x=$x:y=$y,
   echo "$crop"
 fi
 
@@ -88,7 +88,8 @@ fi
 file=$1
 ss=$2
 to=$3
-shift 3
+out=$4
+shift 4
 
 # https://askubuntu.com/questions/648603/how-to-create-an-animated-gif-from-mp4-video-via-command-line
 # https://superuser.com/questions/1608327/ffmpeg-boomerang-effect-to-gif
@@ -96,4 +97,4 @@ ffmpeg \
   -ss "$ss" -to "$to" \
   -i "$file" \
   -filter_complex "${crop}scale=-1:$height${slowdown}${interpolate}${boomerang}${text},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
-  "$@" "$file".gif
+  "$@" "$out".gif
