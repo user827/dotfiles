@@ -5,6 +5,7 @@ slowdown=
 interpolate=
 text=
 hold=
+fade=
 
 docrop=0
 doboomerang=0
@@ -34,6 +35,10 @@ while [ $# -gt 0 ]; do
       ;;
     --hold)
       hold=",tpad=stop_duration=$2:stop_mode=clone"
+      shift 2
+      ;;
+    --fade)
+      fade=",$2"
       shift 2
       ;;
     --slowdown)
@@ -100,5 +105,5 @@ shift 4
 ffmpeg \
   -ss "$ss" -to "$to" \
   -i "$file" \
-  -filter_complex "${crop}scale=-1:$height${slowdown}${interpolate}${boomerang}${text}${hold},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
+  -filter_complex "${crop}scale=-1:$height${slowdown}${interpolate}${boomerang}${text}${hold}${fade},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
   "$@" "$out"
