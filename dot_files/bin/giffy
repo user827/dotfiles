@@ -6,6 +6,7 @@ interpolate=
 text=
 hold=
 fade=
+palettegen=",split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse"
 
 docrop=0
 doboomerang=0
@@ -49,6 +50,10 @@ while [ $# -gt 0 ]; do
     --interpolate)
       dointerpolate=$2
       shift 2
+      ;;
+    --no-palettegen)
+      palettegen=
+      shift
       ;;
     --*)
       echo "Unknown arg $1" >&2
@@ -105,5 +110,5 @@ shift 4
 ffmpeg \
   -ss "$ss" -to "$to" \
   -i "$file" \
-  -filter_complex "${crop}scale=-1:$height${slowdown}${interpolate}${boomerang}${text}${hold}${fade},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
+  -filter_complex "${crop}scale=-1:$height${slowdown}${interpolate}${boomerang}${text}${hold}${fade}${palettegen}" \
   "$@" "$out"
