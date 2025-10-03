@@ -3,8 +3,8 @@ set -eu
 
 slowdown=
 interpolate=
-
 text=
+hold=
 
 docrop=0
 doboomerang=0
@@ -31,6 +31,10 @@ while [ $# -gt 0 ]; do
     --boomerang)
       doboomerang=1
       shift
+      ;;
+    --hold)
+      hold=",tpad=stop_duration=$2:stop_mode=clone"
+      shift 2
       ;;
     --slowdown)
       slowdown=",setpts=$2*PTS"
@@ -96,5 +100,5 @@ shift 4
 ffmpeg \
   -ss "$ss" -to "$to" \
   -i "$file" \
-  -filter_complex "${crop}scale=-1:$height${slowdown}${interpolate}${boomerang}${text},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
-  "$@" "$out".gif
+  -filter_complex "${crop}scale=-1:$height${slowdown}${interpolate}${boomerang}${text}${hold},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
+  "$@" "$out"
