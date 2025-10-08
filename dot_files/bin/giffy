@@ -92,6 +92,7 @@ if [ "$dointerpolate" != 0 ]; then
   # smoother than only interpolating to fps 30 when the input is jittery
   # remove hiccups also https://stackoverflow.com/questions/37088517/remove-sequentially-duplicate-frames-when-using-ffmpeg
   # https://www.reddit.com/r/ffmpeg/comments/koaq7h/replace_duplicates_with_resample/
+  # https://trac.ffmpeg.org/wiki/How%20to%20speed%20up%20/%20slow%20down%20a%20video#Smooth
   interpolate="mpdecimate,minterpolate='mi_mode=mci:mc_mode=aobmc:vsbmc=1:fps=$dointerpolate'"
 fi
 
