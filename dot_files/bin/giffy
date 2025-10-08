@@ -6,13 +6,18 @@ interpolate=
 text=
 hold=
 fade=
-palettegen=",split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse"
+palettegen="split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse"
 
 docrop=0
 doboomerang=0
 dointerpolate=0
+quality=
 while [ $# -gt 0 ]; do
   case "$1" in
+    --quality)
+      quality=1
+      shift
+      ;;
     --width)
       width=$2
       shift 2
@@ -27,7 +32,7 @@ while [ $# -gt 0 ]; do
       ;;
     --text)
       #https://ffmpeg.shanewhite.co/
-      text=,$2
+      text=$2
       shift 2
       ;;
     --boomerang)
@@ -35,15 +40,15 @@ while [ $# -gt 0 ]; do
       shift
       ;;
     --hold)
-      hold=",tpad=stop_duration=$2:stop_mode=clone"
+      hold="tpad=stop_duration=$2:stop_mode=clone"
       shift 2
       ;;
     --fade)
-      fade=",$2"
+      fade="$2"
       shift 2
       ;;
     --slowdown)
-      slowdown=",setpts=$2*PTS"
+      slowdown="setpts=$2*PTS"
       #https://stackoverflow.com/questions/72145599/ffmpeg-change-video-speed-with-r-vs-filter-and-setpts
       shift 2
       ;;
@@ -78,22 +83,21 @@ fi
 crop=
 if [ "$docrop" != 0 ]; then
   IFS=: read -r h x y <<<"$docrop"
-  crop=crop=w=$(( ((width * 1000 / height) * h + 500) / 1000 )):h=$h:x=$x:y=$y,
-  echo "$crop"
+  crop="crop=w=$(( ((width * 1000 / height) * h + 500) / 1000 )):h=$h:x=$x:y=$y"
 fi
 
 if [ "$dointerpolate" != 0 ]; then
   # smoother than only interpolating to fps 30 when the input is jittery
   # remove hiccups also https://stackoverflow.com/questions/37088517/remove-sequentially-duplicate-frames-when-using-ffmpeg
   # https://www.reddit.com/r/ffmpeg/comments/koaq7h/replace_duplicates_with_resample/
-  interpolate=",mpdecimate,minterpolate='fps=$dointerpolate'"
+  interpolate="mpdecimate,minterpolate='mi_mode=mci:mc_mode=aobmc:vsbmc=1:fps=$dointerpolate'"
 fi
 
 boomerang=
 if [ "$doboomerang" != 0 ]; then
   # https://stackoverflow.com/questions/2017843/fetch-frame-count-with-ffmpeg/28376817#28376817
   #https://superuser.com/questions/1089525/how-to-loop-a-video-back-and-forth-with-ffmpeg
-  boomerang=",split[int1][int2];[int2]trim=start_frame=1,setpts=PTS-STARTPTS,reverse,trim=start_frame=1,setpts=PTS-STARTPTS[r];[int1][r]concat"
+  boomerang="split[int1][int2];[int2]trim=start_frame=1,setpts=PTS-STARTPTS,reverse,trim=start_frame=1,setpts=PTS-STARTPTS[r];[int1][r]concat"
   # TODO drops frames without
   #boomerang=",split[int1][int2];[int2]reverse[r];[int1][r]concat,setpts=N/$fps/TB"
   # ?
@@ -105,10 +109,33 @@ to=$3
 out=$4
 shift 4
 
+filterstr=
+if [ -z "$quality" ]; then
+  filterstr="${crop},scale=-1:$height",
+fi
+for filter in \
+  "${slowdown}" \
+  "${interpolate}" \
+  "${boomerang}" \
+  "${hold}" \
+  "${text}" \
+  "${fade}"
+do
+  if [ -n "$filter" ]; then
+    filterstr=$filterstr$filter,
+  fi
+done
+filterstr=${filterstr%,}
+if [ -n "$quality" ]; then
+  filterstr=$filterstr,"${crop},scale=-1:$height"
+fi
+filterstr=$filterstr,${palettegen}
+echo "$filterstr"
+
 # https://askubuntu.com/questions/648603/how-to-create-an-animated-gif-from-mp4-video-via-command-line
 # https://superuser.com/questions/1608327/ffmpeg-boomerang-effect-to-gif
 ffmpeg \
   -ss "$ss" -to "$to" \
   -i "$file" \
-  -filter_complex "${crop}scale=-1:$height${slowdown}${interpolate}${boomerang}${text}${hold}${fade}${palettegen}" \
+  -filter_complex "$filterstr" \
   "$@" "$out"
