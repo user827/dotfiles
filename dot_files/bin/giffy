@@ -27,6 +27,8 @@ while [ $# -gt 0 ]; do
       shift 2
       ;;
     --crop)
+      # Also see panning with crop
+      # https://stackoverflow.com/questions/39734065/ffmpeg-pan-across-image-without-zoom-in-or-out
       docrop=$2
       shift 2
       ;;
