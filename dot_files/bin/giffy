@@ -7,15 +7,20 @@ text=
 hold=
 fade=
 palettegen="split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse"
+final_delay=
 
 docrop=0
 doboomerang=0
 dointerpolate=0
-quality=
+dev=
 while [ $# -gt 0 ]; do
   case "$1" in
-    --quality)
-      quality=1
+    --final_delay)
+      final_delay="-final_delay $2"
+      shift 2
+      ;;
+    --dev)
+      dev=1
       shift
       ;;
     --width)
@@ -113,7 +118,7 @@ out=$4
 shift 4
 
 filterstr=
-if [ -z "$quality" ]; then
+if [ -n "$dev" ]; then
   filterstr="${crop},scale=-1:$height",
 fi
 for filter in \
@@ -129,7 +134,7 @@ do
   fi
 done
 filterstr=${filterstr%,}
-if [ -n "$quality" ]; then
+if [ -z "$dev" ]; then
   filterstr=$filterstr,"${crop},scale=-1:$height"
 fi
 filterstr=$filterstr,${palettegen}
@@ -141,4 +146,4 @@ ffmpeg \
   -ss "$ss" -to "$to" \
   -i "$file" \
   -filter_complex "$filterstr" \
-  "$@" "$out"
+  $final_delay "$@" "$out"
