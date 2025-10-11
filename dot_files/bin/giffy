@@ -13,14 +13,9 @@ docrop=0
 doboomerang=0
 dointerpolate=0
 dev=
-yes=
 custom=
 while [ $# -gt 0 ]; do
   case "$1" in
-    --yes)
-      yes=-y
-      shift
-      ;;
     --custom)
       custom="$2,"
       echo hello
@@ -159,4 +154,4 @@ echo "out $out"
 ffmpeg \
   "$@" \
   -filter_complex "$filterstr" \
-  -an $final_delay $yes "$out"
+  -an $final_delay "$out"
