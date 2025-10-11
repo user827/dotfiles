@@ -13,8 +13,19 @@ docrop=0
 doboomerang=0
 dointerpolate=0
 dev=
+yes=
+custom=
 while [ $# -gt 0 ]; do
   case "$1" in
+    --yes)
+      yes=-y
+      shift
+      ;;
+    --custom)
+      custom="$2,"
+      echo hello
+      shift 2
+      ;;
     --final_delay)
       final_delay="-final_delay $2"
       shift 2
@@ -33,6 +44,7 @@ while [ $# -gt 0 ]; do
       ;;
     --crop)
       # Also see panning with crop
+      # https://ffmpeg.unixpin.com/2018/09/27/image-animation-pan/
       # https://stackoverflow.com/questions/39734065/ffmpeg-pan-across-image-without-zoom-in-or-out
       docrop=$2
       shift 2
@@ -90,7 +102,7 @@ fi
 crop=
 if [ "$docrop" != 0 ]; then
   IFS=: read -r h x y <<<"$docrop"
-  crop="crop=w=$(( ((width * 1000 / height) * h + 500) / 1000 )):h=$h:x=$x:y=$y"
+  crop="crop=w=$(( ((width * 1000 / height) * h + 500) / 1000 )):h=$h:x=$x:y=$y,"
 fi
 
 if [ "$dointerpolate" != 0 ]; then
@@ -98,6 +110,7 @@ if [ "$dointerpolate" != 0 ]; then
   # remove hiccups also https://stackoverflow.com/questions/37088517/remove-sequentially-duplicate-frames-when-using-ffmpeg
   # https://www.reddit.com/r/ffmpeg/comments/koaq7h/replace_duplicates_with_resample/
   # https://trac.ffmpeg.org/wiki/How%20to%20speed%20up%20/%20slow%20down%20a%20video#Smooth
+  # https://superuser.com/questions/1706239/using-ffmpeg-mpdecimate-to-get-rid-of-exact-duplicate-frames-i-e-losslessly
   interpolate="mpdecimate,minterpolate='mi_mode=mci:mc_mode=aobmc:vsbmc=1:fps=$dointerpolate'"
 fi
 
@@ -111,15 +124,13 @@ if [ "$doboomerang" != 0 ]; then
   # ?
 fi
 
-file=$1
-ss=$2
-to=$3
-out=$4
-shift 4
+echo "params $@"
+out=$1
+shift
 
 filterstr=
 if [ -n "$dev" ]; then
-  filterstr="${crop},scale=-1:$height",
+  filterstr="${custom}${crop}scale=-1:$height",
 fi
 for filter in \
   "${slowdown}" \
@@ -133,17 +144,19 @@ do
     filterstr=$filterstr$filter,
   fi
 done
-filterstr=${filterstr%,}
 if [ -z "$dev" ]; then
-  filterstr=$filterstr,"${crop},scale=-1:$height"
+  filterstr=$filterstr${custom}${crop}scale=-1:$height
+else
+  filterstr=${filterstr%,}
 fi
 filterstr=$filterstr,${palettegen}
 echo "$filterstr"
 
 # https://askubuntu.com/questions/648603/how-to-create-an-animated-gif-from-mp4-video-via-command-line
 # https://superuser.com/questions/1608327/ffmpeg-boomerang-effect-to-gif
+echo "$@"
+echo "out $out"
 ffmpeg \
-  -ss "$ss" -to "$to" \
-  -i "$file" \
+  "$@" \
   -filter_complex "$filterstr" \
-  $final_delay "$@" "$out"
+  -an $final_delay $yes "$out"
