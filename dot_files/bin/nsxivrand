@@ -69,7 +69,7 @@ findlatest() {
 }
 
 myname=$(basename "$0")
-if [ "$myname" = sxivrand ] ;then
+if [ "$myname" = nsxivrand ] ;then
   if [ $list_only = 1 ]; then
     findem "$@"
   else
