@@ -37,7 +37,7 @@ while true; do
         printf '\rReceived: %6d KiB/s (%6d MiB)    Sent: %6d KiB/s (%6d MiB)' \
           $((bwrx/1024)) $((totalrx/(1024*1024) )) $((bwtx/1024)) $((totaltx/(1024*1024) ))
       else
-        msg=$msg$(printf '%16s: Received: %6d KiB/s (%6d MiB)    Sent: %6d KiB/s (%6d MiB)\n' \
+        msg=$msg$(printf '%s:\n Received: %6d KiB/s (%6d MiB)    Sent: %6d KiB/s (%6d MiB)\n' \
           "$iface" $((bwrx/1024)) $((totalrx/(1024*1024) )) $((bwtx/1024)) $((totaltx/(1024*1024) )))$'\n'
       fi
     fi
