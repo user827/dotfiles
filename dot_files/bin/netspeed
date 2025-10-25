@@ -1,26 +1,53 @@
-#!/bin/sh
+#!/bin/bash
 set -eu
 
-iface=${1:-}
-if [ -z "$iface" ]; then
-  for iface_path in /sys/class/net/*; do break; done
-  iface=${iface_path##*/}
-fi
-RXPREV=-1
-TXPREV=-1
-TOTALRX=0
-TOTALTX=0
-echo "Listening $iface..."
+banner_printed=0
+declare -A txprevs rxprevs totalrxs totaltxs
 while true; do
-  read -r RX < /sys/class/net/"$iface"/statistics/rx_bytes
-  read -r TX < /sys/class/net/"$iface"/statistics/tx_bytes
-  if [ "$RXPREV" != -1 ]; then
-    : $((BWRX=RX-RXPREV)) $((BWTX=TX-TXPREV))
-    : $((TOTALRX=TOTALRX+BWRX)) : $((TOTALTX=TOTALTX+BWTX))
-    printf '\rReceived: %6d KiB/s (%6d MiB)    Sent: %6d KiB/s (%6d MiB)' \
-      $((BWRX/1024)) $((TOTALRX/(1024*1024) )) $((BWTX/1024)) $((TOTALTX/(1024*1024) ))
+  if [ $# = 0 ]; then
+    ifaces=()
+    for iface_path in /sys/class/net/*; do
+      ifaces+=("${iface_path##*/}")
+    done
+  else
+    ifaces=("$@")
   fi
-  RXPREV=$RX
-  TXPREV=$TX
+
+  if [ ${#ifaces[@]} = 1 ]; then
+    if [ $banner_printed = 0 ]; then
+      echo "Listening $1..."
+      banner_printed=1
+    fi
+  else
+    banner_printed=0
+  fi
+
+  msg=
+  for iface in "${ifaces[@]}"; do
+    read -r rx < /sys/class/net/"$iface"/statistics/rx_bytes
+    read -r tx < /sys/class/net/"$iface"/statistics/tx_bytes
+    rxprev=${rxprevs[$iface]:-"-1"}
+    txprev=${txprevs[$iface]:-"-1"}
+    totalrx=${totalrxs[$iface]:-"0"}
+    totaltx=${totaltxs[$iface]:-"0"}
+    if [ "$rxprev" != -1 ]; then
+      : $((bwrx=rx-rxprev)) $((bwtx=tx-txprev))
+      : $((totalrx=totalrx+bwrx)) : $((totaltx=totaltx+bwtx))
+      if [ "${#ifaces[@]}" = 1 ]; then
+        printf '\rReceived: %6d KiB/s (%6d MiB)    Sent: %6d KiB/s (%6d MiB)' \
+          $((bwrx/1024)) $((totalrx/(1024*1024) )) $((bwtx/1024)) $((totaltx/(1024*1024) ))
+      else
+        msg=$msg$(printf '%16s: Received: %6d KiB/s (%6d MiB)    Sent: %6d KiB/s (%6d MiB)\n' \
+          "$iface" $((bwrx/1024)) $((totalrx/(1024*1024) )) $((bwtx/1024)) $((totaltx/(1024*1024) )))$'\n'
+      fi
+    fi
+    rxprevs[$iface]=$rx
+    txprevs[$iface]=$tx
+    totaltxs[$iface]=$totaltx
+    totalrxs[$iface]=$totalrx
+  done
+  if [ ${#ifaces[@]} -gt 1 ] && [ -n "$msg" ]; then
+    printf '%s\n' "$msg"
+  fi
   sleep 1
 done
