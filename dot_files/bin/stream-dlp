@@ -8,14 +8,14 @@ if [ -z "${is_sleep_inhibited:-}" ]; then
   exec gnome-session-inhibit --app-id yt-dlp-retry --reason dling --inhibit suspend "$0" "$@"
 fi
 
-retriesleft=1000
+retriesleft=100
 while [ $retriesleft -gt 0 ]; do
   starttime=$(date +%s)
   yt-dlp --socket-timeout 5 "$@" || true
   endtime=$(date +%s)
   if [ $((endtime - starttime)) -gt 100 ]; then
     echo "Had a successful download"
-    retriesleft=1000
+    retriesleft=100
   fi
   retriesleft=$((retriesleft - 1))
   echo "sleeping $retriesleft"

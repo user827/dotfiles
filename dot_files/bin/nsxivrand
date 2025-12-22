@@ -74,9 +74,9 @@ if [ "$myname" = nsxivrand ] ;then
     findem "$@"
   else
     #use m3u to sue security features disabled by --playlist
-    findem "$@" | sort -R | nsxiv -io
+    findem "$@" | sort -R | nsxiv -iop
   fi
 elif [ "$myname" = sxivlatest ]; then
   #findlatest "$@"
-  findlatest "$@" | tr '\0' '\n' | nsxiv -io
+  findlatest "$@" | tr '\0' '\n' | nsxiv -iop
 fi
