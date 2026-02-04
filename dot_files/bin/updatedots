@@ -2,7 +2,7 @@
 set -eu
 
 verify=--verify-signatures
-if [ "$1" = --force ]; then
+if [ "${1-}" = --force ]; then
   verify=
 fi
 
