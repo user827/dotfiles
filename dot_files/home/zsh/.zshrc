@@ -16,7 +16,7 @@ if [ -n "${SSH_CONNECTION:-}" ]; then
   fi
 fi
 
-if [[ $TERM == *-256color ]] && [[ -z $TMUX ]] && [[ -z $SCREEN ]]; then
+if [[ $TERM == *-256color || $TERM == *-kitty ]] && [[ -z $TMUX ]] && [[ -z $SCREEN ]]; then
   eval $(dircolors -b)
 
   echo "Setting solarized dark base16 256colors"
