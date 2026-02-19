@@ -42,3 +42,7 @@ Run `updatedots`.
 ```
 gnome-extensions enable appindicatorsupport@rgcjonas.gmail.com
 ```
+
+## For vim
+- for blink.nvim: an cargo build --release --target-dir target
+- for treesitter: :lua require'nvim-treesitter'.install { 'vim', 'regex', 'lua', 'bash', 'markdown', 'markdown_inline' }
