@@ -18,11 +18,11 @@ case "${1-}" in
     done
     ;;
   init|"")
-    echo init
-    #echo syncinc
-    #git submodule sync --recursive
-    echo initializing and updating
-    git submodule update --init --recursive
+    git -C vim pull || git clone https://github.com/user827/vimfiles.git vim
+    for t in . $subtrees; do
+      echo initializing and updating
+      git -C "$t" submodule update --init --recursive
+    done
     ;;
   update)
     for t in . $subtrees; do
