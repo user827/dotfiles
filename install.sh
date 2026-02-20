@@ -7,6 +7,11 @@ cd "$(dirname "$0")"
 # we don't know what the submodules of external repos can work with.
 subtrees="vim"
 
+verify=--verify-signatures
+if [ "${1-}" = --force ]; then
+  verify=
+  shift
+fi
 case "${1-}" in
   checkout)
     for t in . $subtrees; do
@@ -18,7 +23,7 @@ case "${1-}" in
     done
     ;;
   init|"")
-    git -C vim pull || git clone https://github.com/user827/vimfiles.git vim
+    git -C vim pull $verify || git clone https://github.com/user827/vimfiles.git vim
     for t in . $subtrees; do
       echo initializing and updating
       git -C "$t" submodule update --init --recursive
