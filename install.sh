@@ -25,11 +25,7 @@ case "${1-}" in
     git submodule update --init --recursive
     ;;
   update)
-    echo update
-    git submodule update --init --remote
-    echo foreach
-    git submodule foreach 'git submodule update --init --recursive'
-    for t in $subtrees; do
+    for t in . $subtrees; do
       echo "updating '$t'"
       git -C "$t" submodule update --init --remote
       # Don't combine --recursive with --remote in order to avoid pulling a commit

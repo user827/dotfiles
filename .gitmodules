@@ -11,6 +11,7 @@
 	path = vim
 	url = https://github.com/user827/vimfiles.git
 	update = merge
+	branch = master
 [submodule "data/awesome-revelation"]
 	path = data/awesome-revelation
 	url = https://github.com/guotsuan/awesome-revelation.git
