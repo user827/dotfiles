@@ -1,44 +1,68 @@
 # Maintainer: me
 
 pkgname=myhome
-pkgver=0.4.2
-pkgrel=2
+pkgver=0.5
+pkgrel=1
 pkgdesc='My cli utils'
 url="https://github.com/user827/dotfiles.git"
 arch=('any')
 license=('Apache')
 depends=(
-    bat
-    byobu
-    fd
-    fzf
-    git
-    inetutils
-    less
-    man
-    mutt
-    remind
-    ripgrep
-    tmux
-    unzip
-    wget
-    zsh
+  bat
+  byobu
+  fd
+  fzf
+  git
+  inetutils
+  less
+  man
+  mutt
+  remind
+  ripgrep
+  tmux
+  unzip
+  wget
+  zsh
 
-    neovim python-pynvim
-    shellcheck bash-language-server
-    vim-language-server
+  neovim python-pynvim
+  shellcheck bash-language-server
+  vim-language-server
 
-    libvoikko
-    voikko-fi
+  libvoikko
+  voikko-fi
+
+  kitty
+
+  gdm gnome-shell-extension-appindicator
+  pipewire-audio pipewire-pulse pipewire-alsa
+  wayland xorg-xwayland gnome-ssh-askpass4-git
+  wl-clipboard fwupd bluez-utils
+  firefox
+  libnotify
+  mpv
+  noto-fonts noto-fonts-emoji otf-ipafont ttf-sourcecodepro-nerd
+  nsxiv
+  sound-theme-freedesktop
+  yt-dlp
+  zathura-djvu zathura-pdf-mupdf
+  voikko-libreoffice
+)
+optdepends=(
+  firefox
+  chromium
+  awesome
+  xdotool
+  xorg-server xorg-xinit
+  xss-lock xsecurelock
 )
 install=$pkgname.install
 
 package() {
   mkdir -p "$pkgdir"/etc/systemd/logind.conf.d/
   cat > "$pkgdir"/etc/systemd/logind.conf.d/myhome.conf <<EOF
-[Login]
-# Because we want tmux server to be in the current session
-KillUserProcesses=yes
+  [Login]
+  # Because we want tmux server to be in the current session
+  KillUserProcesses=yes
 EOF
 }
 
