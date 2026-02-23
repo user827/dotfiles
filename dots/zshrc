@@ -41,23 +41,6 @@ autoload -Uz zed
 autoload -Uz select-word-style
 # do this afte zsh-syntax higihlight if you do not want to override default widgets...
 select-word-style shell
-
-source $HOME/.zsh/data/zsh-autosuggestions/zsh-autosuggestions.zsh
-if [ "$TERM" != linux ]; then
-  :
-  #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=59'
-else
-  ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=1'
-  #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=5'
-  #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=4'
-fi
-# TODO some bindkeys ignored because we call bindkey -e later
-
-#source $HOME/.zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
-#HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
-
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
-source $HOME/.zsh/data/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # }}}}
 
 source $HOME/.zsh/completion.zsh
@@ -68,6 +51,29 @@ source $HOME/.zsh/commands.zsh
 
 # Local and host-specific overrides.
 [ ! -f $HOME/.zshrc-local.zsh ] || . $HOME/.zshrc-local.zsh
+
+
+# Modules {{{
+source $HOME/.zsh/data/zsh-autosuggestions/zsh-autosuggestions.zsh
+if [ "$TERM" != linux ]; then
+  :
+  #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=59'
+else
+  ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=1'
+  #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=5'
+  #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=4'
+fi
+# TODO some bindkeys ignored because we call bindkey -e later
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+
+#source $HOME/.zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
+#HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
+
+# must be loaded last
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+source $HOME/.zsh/data/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# }}}
 
 #Sources
 #http://chneukirchen.org/blog/

@@ -6,8 +6,6 @@ In arch linux, ensure all dependencies are installed by
 ```
 cd pacman/myhome
 makepkg --syncdeps --install
-cd ../myhomex
-makepkg --syncdeps --install
 ```
 
 # Installation
