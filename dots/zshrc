@@ -4,8 +4,6 @@ case "$(tty)" in
     TMOUT=600
     #[[ $- = *l* ]] && return
     alias startx='exec myx'
-    alias myway='exec sh myway'
-
     ;;
 esac
 
@@ -23,9 +21,7 @@ if [[ $TERM == *-256color || $TERM == *-kitty ]] && [[ -z $TMUX ]] && [[ -z $SCR
   source $HOME/.zsh/data/base16-shell/scripts/base16-solarized-dark.sh
 fi
 
-
 source $HOME/.zsh/options.zsh
-
 
 # Load a few modules {{{{
 for mod in parameter complist deltochar mathfunc ; do
@@ -69,8 +65,6 @@ source $HOME/.zsh/prompt.zsh
 source $HOME/.zsh/aliases.zsh
 source $HOME/.zsh/bindings.zsh
 source $HOME/.zsh/commands.zsh
-
-
 
 # Local and host-specific overrides.
 [ ! -f $HOME/.zshrc-local.zsh ] || . $HOME/.zshrc-local.zsh

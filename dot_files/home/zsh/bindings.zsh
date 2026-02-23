@@ -150,6 +150,8 @@ bindkey -M menuselect '^R' history-incremental-search-backward
 bindkey -M menuselect '^S' history-incremental-search-forward
 bindkey -M menuselect '^[i' vi-insert
 
+bindkey '\e' vi-cmd-mode
+
 # from wincent
 # fd - "find directory"
 # Inspired by: https://github.com/junegunn/fzf/wiki/examples#changing-directory

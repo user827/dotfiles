@@ -1,3 +1,6 @@
+# Make esc usable for vi-cmd-mode switching. Same as in neomvim 50ms
+KEYTIMEOUT=5
+
 # history
 #v#
 HISTFILE=$HOME/.zsh_history

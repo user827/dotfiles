@@ -86,8 +86,19 @@ load_prompt() {
     fi
   }
 
-  export RPROMPT=$RPROMPT_BASE
+  # TODO ignored
+  #export RPROMPT=$RPROMPT_BASE
   export SPROMPT="zsh: correct %F{red}'%R'%f to %F{red}'%r'%f [%B%Uy%u%bes, %B%Un%u%bo, %B%Ue%u%bdit, %B%Ua%u%bbort]? "
+
+  # TODO
+  #function zle-line-init zle-keymap-select {
+  #  RPROMPT_BASE="${${KEYMAP/vicmd/-- NORMAL --}/(main|viins)/}"
+  #  #RPS2=$RPS1
+  #  zle reset-prompt
+  #}
+
+  #zle -N zle-line-init
+  #zle -N zle-keymap-select
 }
 
 if [ "$TERM" != linux ]; then
