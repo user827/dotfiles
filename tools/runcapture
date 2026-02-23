@@ -1,9 +1,0 @@
-#!/bin/sh
-set -eu
-
-# Set user back to the one who called sudo
-
-# warning: insecure path
-
-user=$SUDO_USER
-exec /usr/bin/setpriv --regid "$user" --reuid "$user" --keep-groups --inh-caps +sys_admin --ambient-caps +sys_admin -- "$@"
