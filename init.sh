@@ -52,6 +52,3 @@ case $- in
 esac
 #A way to handle overwrite policy with ln.
 bash ${debug:+-x} "$L_LIB_PATH"/dot_files.sh "$@" "$L_GIT_ROOT"/dots_gen
-
-echo
-vim/init.sh "$@"

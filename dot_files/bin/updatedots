@@ -7,4 +7,11 @@ if [ "${1-}" = --force ]; then
 fi
 
 # --rebase ignores --verify signatures so turn back into merging
-cd ~/dotfiles && git pull $verify && ./install.sh "$@" && ./init.sh "$@"
+cd ~/dotfiles
+git pull $verify
+./install.sh "$@"
+./init.sh "$@"
+
+git -C vim pull $verify
+vim/install.sh "$@"
+vim/init.sh "$@"
