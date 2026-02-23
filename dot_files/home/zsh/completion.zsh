@@ -178,7 +178,6 @@ zstyle ':completion:most-recent-file:*' file-patterns '*:all\ files'
 #zstyle ':completion:most-recent-file:*' hidden all
 zstyle ':completion:most-recent-file:*' completer _files
 zle -C most-recent-file menu-complete _generic
-bindkey "^y"      most-recent-file
 
 compdef _options zman
 #todo difference between compdef and styles?

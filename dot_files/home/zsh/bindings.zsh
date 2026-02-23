@@ -1,6 +1,7 @@
 # default bindings
 bindkey -e
 
+bindkey "^y"      most-recent-file
 
 # uses global ignore file
 FZF_CTRL_T_COMMAND='command fd --hidden .'
