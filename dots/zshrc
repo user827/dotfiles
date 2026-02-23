@@ -20,15 +20,16 @@ if [[ $TERM == *-256color || $TERM == *-kitty ]] && [[ -z $TMUX ]] && [[ -z $SCR
   eval $(dircolors -b)
 
   echo "Setting solarized dark base16 256colors"
-  source ${ZDOTDIR:-${HOME}}/data/base16-shell/scripts/base16-solarized-dark.sh
+  source $HOME/.zsh/data/base16-shell/scripts/base16-solarized-dark.sh
 fi
 
 
 # Setopts {{{{
+source $HOME/.zsh/options.zsh
 
 # history
 #v#
-HISTFILE=${ZDOTDIR:-${HOME}}/.zsh_history
+HISTFILE=$HOME/.zsh_history
 HISTSIZE=15000 # should be larger than savehist for trimming dups
 SAVEHIST=10000 # useful for setopt append_history
 
@@ -155,7 +156,7 @@ autoload -Uz select-word-style
 # do this afte zsh-syntax higihlight if you do not want to override default widgets...
 select-word-style shell
 
-source ${ZDOTDIR:-${HOME}}/data/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $HOME/.zsh/data/zsh-autosuggestions/zsh-autosuggestions.zsh
 if [ "$TERM" != linux ]; then
   :
   #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=59'
@@ -166,15 +167,15 @@ else
 fi
 # TODO some bindkeys ignored because we call bindkey -e later
 
-#source ${ZDOTDIR:-${HOME}}/zsh-history-substring-search/zsh-history-substring-search.zsh
+#source $HOME/.zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
 #HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
-source ${ZDOTDIR:-${HOME}}/data/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $HOME/.zsh/data/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # }}}}
 
 # {{{{ Completion system
-COMPDUMPFILE=${COMPDUMPFILE:-${ZDOTDIR:-${HOME}}/.zcompdump}
+COMPDUMPFILE=${COMPDUMPFILE:-$HOME/.zsh/zcompdump}
 autoload -Uz compinit
 compinit -d ${COMPDUMPFILE} || print 'Notice: no compinit available :('
 
@@ -300,7 +301,7 @@ zstyle ':completion:*:urls' local 'www' '/var/www/' 'public_html'
 # Some functions, like _apt and _dpkg, are very slow. We can use a cache in
 # order to speed things up
 if [[ ${GRML_COMP_CACHING:-yes} == yes ]]; then
-    GRML_COMP_CACHE_DIR=${GRML_COMP_CACHE_DIR:-${ZDOTDIR:-$HOME}/.cache}
+    GRML_COMP_CACHE_DIR=${GRML_COMP_CACHE_DIR:-$HOME/.zsh/cache}
     if [[ ! -d ${GRML_COMP_CACHE_DIR} ]]; then
         command mkdir -p "${GRML_COMP_CACHE_DIR}"
     fi
@@ -672,7 +673,7 @@ function fg-bg() {
 zle -N fg-bg
 bindkey '^Z' fg-bg
 
-bindkey jk vi-cmd-mode
+#bindkey jk vi-cmd-mode
 
 #GRML makes it slow to type eol
 bindkey -r '^Ed'
