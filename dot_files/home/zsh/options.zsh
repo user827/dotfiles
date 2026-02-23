@@ -3,7 +3,7 @@ KEYTIMEOUT=5
 
 # history
 #v#
-HISTFILE=$HOME/.zsh_history
+HISTFILE=$HOME/.zsh/history
 HISTSIZE=15000 # should be larger than savehist for trimming dups
 SAVEHIST=10000 # useful for setopt append_history
 
