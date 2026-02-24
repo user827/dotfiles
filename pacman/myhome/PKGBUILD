@@ -40,7 +40,7 @@ depends=(
   firefox
   libnotify
   mpv
-  noto-fonts noto-fonts-emoji otf-ipafont ttf-sourcecodepro-nerd
+  noto-fonts noto-fonts-emoji otf-ipafont
   nsxiv
   sound-theme-freedesktop
   yt-dlp
