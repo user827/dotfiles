@@ -2,17 +2,18 @@
 
 install_module() {
   fc_list=$(fc-list)
-  case "$fc_list" in
-    *'SauceCodePro Nerd Font Mono'*)
-      ;;
-    *)
-      if command -v pacman > /dev/null; then
-        sudo pacman -S ttf-sourcecodepro-nerd
-      else
-        log warn 'Terminal font SauceCodePro Nerd Font Mono is missing'
-      fi
-      ;;
-  esac
+  # kitty does not recommend font patching
+  #case "$fc_list" in
+  #  *'SauceCodePro Nerd Font Mono'*)
+  #    ;;
+  #  *)
+  #    if command -v pacman > /dev/null; then
+  #      sudo pacman -S ttf-sourcecodepro-nerd
+  #    else
+  #      log warn 'Terminal font SauceCodePro Nerd Font Mono is missing'
+  #    fi
+  #    ;;
+  #esac
   case "$fc_list" in
     *'Noto Color Emoji'*)
       ;;
