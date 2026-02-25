@@ -65,7 +65,8 @@ else
 fi
 # TODO some bindkeys ignored because we call bindkey -e later
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+# drops the suggestions when for alternatives
+#ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 
 #source $HOME/.zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
 #HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
