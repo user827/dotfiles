@@ -19,5 +19,5 @@ while [ $retriesleft -gt 0 ]; do
   fi
   retriesleft=$((retriesleft - 1))
   echo "sleeping $retriesleft"
-  sleep 180
+  sleep 60
 done
