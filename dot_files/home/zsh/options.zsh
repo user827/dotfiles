@@ -108,3 +108,8 @@ watch=(notme root)
 
 # automatically remove duplicates from these arrays
 typeset -U path cdpath fpath manpath
+
+# Claude Code snapshots these options into its non-interactive shell
+if [[ -n $CLAUDECODE ]]; then
+  setopt clobber nocorrect
+fi
